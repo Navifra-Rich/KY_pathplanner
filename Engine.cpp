@@ -1,288 +1,131 @@
 #pragma once
 #include "Engine.h"
 #include <math.h>
-long long dist(const Pos* p1, const Pos* p2) {
-	return (long long)(p1->x - p2->x) * (p1->x - p2->x) + (long long)(p1->y - p2->y) * (p1->y - p2->y);
-}
-int ccw(const Pos* p1, const Pos* p2, const Pos* p3) {
-
-	int cross_product = (p2->x - p1->x) * (p3->y - p1->y) - (p3->x - p1->x) * (p2->y - p1->y);
-
-	if (cross_product > 0) {
-		return 1;
-	}
-	else if (cross_product < 0) {
-		return -1;
-	}
-	else {
-		return 0;
-	}
-}
-int comparator(const Pos* left, const Pos* right, const Pos p) {
-	int ret;
-	int direction = ccw(&p, left, right);
-	if (direction == 0) {
-		ret = (dist(&p, left) < dist(&p, right));
-	}
-	else if (direction == 1) {
-		ret = 1;
-	}
-	else {
-		ret = 0;
-	}
-	return ret;
-}
-void QuickSort(vector<Pos>& a, int lo, int hi, Pos init) {
-	if (hi - lo <= 0) {
-		return;
-	}
-
-	// 현재 배열 범위의 중앙값을 피벗으로 선택한다.
-	// Select the median as pivot in the current array range.
-	Pos pivot = a[lo + (hi - lo + 1) / 2];
-	int i = lo, j = hi;
-
-	// 정복 과정
-	// Conquer process
-	while (i <= j) {
-		// 피벗의 왼쪽에는 comparator(타겟, "피벗")을 만족하지 않는 인덱스를 선택 (i)
-		// On the left side of the pivot, select an index that doesn't satisfy the comparator(target, "pivot"). (i)
-		while (comparator(&a[i], &pivot, init)) i++;
-
-		// 피벗의 오른쪽에는 comparator("피벗", 타겟)을 만족하지 않는 인덱스를 선택 (j)
-		// On the right side of the pivot, select an index that doesn't satisfy the comparator("pivot", target). (j)
-		while (comparator(&pivot, &a[j], init)) j--;
-		// (i > j) 피벗의 왼쪽에는 모든 값이 피벗보다 작고 피벗의 오른쪽에는 모든 값이 피벗보다 큰 상태가 되었음.
-		// (i > j) On the left side of the pivot, all values are smaller than the pivot, and on the right side of the pivot, all values are larger than the pivot.
-		if (i > j) {
-			break;
-		}
-
-		// i번째 값은 피벗 보다 크고 j번째 값은 피벗보다 작으므로 두 값을 스왑한다.
-		// The i-th value is larger than the pivot and the j-th value is smaller than the pivot, so swap the two values.
-		Pos temp = a[i];
-		a[i] = a[j];
-		a[j] = temp;
-
-		// 인덱스 i를 1증가 시키고 인덱스 j를 1 감소 시켜서 탐색 범위를 안쪽으로 좁힌다.
-		// Narrow the search inward by increasing index i by one and decreasing index j by one.
-		i++;
-		j--;
-	}
-
-	// 분할 과정
-	// Divide process
-	QuickSort(a, lo, j, init);
-	QuickSort(a, i, hi, init);
-}
+#include "hgMath.h"
+#include "PathPlanner.h"
+#include <fstream>
 void Engine::setCarnum(int car_num) {
 	this->car_num = car_num;
 }
 void Engine::setWaypointRand(int waypoint_num) {
 	std::cout << "Way Points" << std::endl<<std::endl;
-	//for (int i = 0; i < waypoint_num; i++) {
-	//	Pos tmp;
-	//	tmp.x = (double)(rand() % 100)+0.5;
-	//	tmp.y = (double)(rand() % 100)+0.5;
-	//	std::cout << "(" << tmp.x << "," << tmp.y << ")  ";
-	//	this->wayPoints.push_back(tmp);
-	//}
-
 	// 오~각형
-	this->wayPoints.push_back(Pos(2,0));
-	this->wayPoints.push_back(Pos(1,2 ));
-	this->wayPoints.push_back(Pos(4,0 ));
-	this->wayPoints.push_back(Pos(5,2 ));
-	this->wayPoints.push_back(Pos(3,4 ));
-
+	//this->wayPoints.push_back(Pos(20,0));
+	//this->wayPoints.push_back(Pos(40,0));
+	//this->wayPoints.push_back(Pos(50,20 ));
+	//this->wayPoints.push_back(Pos(30,40 ));
+	//this->wayPoints.push_back(Pos(10,20));
 
 	// 사~각형
-	//this->wayPoints.push_back(Pos(4, 0));
-	//this->wayPoints.push_back(Pos(-4, 0));
-	//this->wayPoints.push_back(Pos(7, 8));
-	//this->wayPoints.push_back(Pos(-1, 8));
-
+	//this->wayPoints.push_back(Pos(-40, 0));
+	//this->wayPoints.push_back(Pos(40, 0));
+	//this->wayPoints.push_back(Pos(70, 80));
+	//this->wayPoints.push_back(Pos(-10, 80));
+	// 
+	// 마룸몽
+	//this->wayPoints.push_back(Pos(280, 503));
+	//this->wayPoints.push_back(Pos(130, 353));
+	//this->wayPoints.push_back(Pos(280, 203));
+	//this->wayPoints.push_back(Pos(430, 353));
+	// 
 	// 정~사각형
 	//this->wayPoints.push_back(Pos(0, 0));
-	//this->wayPoints.push_back(Pos(8, 0));
-	//this->wayPoints.push_back(Pos(0, 8));
-	//this->wayPoints.push_back(Pos(8, 8));
-	std::cout << std::endl;
+	//this->wayPoints.push_back(Pos(20, 0));
+	//this->wayPoints.push_back(Pos(20, 20));
+	//this->wayPoints.push_back(Pos(0, 20));
+
+	// 길쭊사각형
+	//this->wayPoints.push_back(Pos(0, 0));
+	//this->wayPoints.push_back(Pos(10, 0));
+	//this->wayPoints.push_back(Pos(10, 100));
+	//this->wayPoints.push_back(Pos(0, 100));
+
+	// 별별
+	this->wayPoints.push_back(Pos(10, 0));
+	this->wayPoints.push_back(Pos(20, 20));
+	this->wayPoints.push_back(Pos(30, 0));
+	this->wayPoints.push_back(Pos(27, 20));
+	this->wayPoints.push_back(Pos(40, 40));
+	this->wayPoints.push_back(Pos(25, 40));
+	this->wayPoints.push_back(Pos(20, 60));
+	this->wayPoints.push_back(Pos(15, 40));
+	this->wayPoints.push_back(Pos(0, 40));
+	this->wayPoints.push_back(Pos(13, 20));
 }
 vector<vector<Pos>> Engine::getPath2() {
-	Pos center = this->getCenterPoint(this->wayPoints);
+	//vector<int> hi = hgMath::makeConvex(this->wayPoints);
+	//cout << "RRR" << endl;
+	//
+	//vector<vector<Pos>> rere;
+	//return rere;
+	Pos center = hgMath::getCenterPoint(this->wayPoints);
 
 	std::cout << "Center = " << center.x << " " << center.y << std::endl;
 
-	// ---------------------- Sort waypoint  ( Clock wise )
-	std::cout << "------------ Start" << std::endl;
-	for (vector<Pos>::iterator a = this->wayPoints.begin(); a != this->wayPoints.end(); a++) {
-		std::cout << a->x << " " << a->y << std::endl;
-	}
-	std::cout << "------------ SOrt" << std::endl;
-	QuickSort(this->wayPoints, 1, this->wayPoints.size() - 1, this->wayPoints[0]);
-	for (vector<Pos>::iterator a = this->wayPoints.begin(); a != this->wayPoints.end(); a++) {
-		std::cout << a->x << " " << a->y << std::endl;
-	}
+	//this->printWaypoints();
+	//hgMath::QuickSort(this->wayPoints, 1, this->wayPoints.size() - 1, this->wayPoints[0]);
+	//this->printWaypoints();
 
-	double area = this->integral_sum(this->wayPoints);
-	double area_per_unit = area / this->car_num;
-	double area_th = 0.2;
-	this->wayPoints.push_back(this->wayPoints[0]);
+	vector<Pos> inter_points = PathPlanner::getInnerPoint_polygon(wayPoints);
+	cout << inter_points[0].x << " " << inter_points[0].y << endl;
+	cout << inter_points[0].x << " " << inter_points[0].y << endl;
+	cout << "N = " << inter_points.size() << endl;
+
+	vector<Pos> pca = hgMath::PCA(inter_points);
+	if (pca[0].x == 0) pca[0].x += 0.000001;
+	if (pca[1].y == 0) pca[1].y += 0.000001;
+	double ratio = pca[0].x / (pca[1].y);
+	if (ratio < 1) ratio = 1 / (ratio );
+
+	cout << "RATIO " << ratio << endl;
 
 	vector<vector<Pos>> route;
-	vector<Pos> mission_vec;
-	mission_vec.push_back(center);
-	mission_vec.push_back(this->wayPoints[0]);
+	return route;
+	// 공분산 큰 경우
+	if (ratio > 0) {
+		//KMean_clustering km(this->car_num, wayPoints.size());
+		//this->wayPoints = km.clustering(wayPoints);
+		KMean_clustering km(this->car_num, inter_points.size());
+		this->wayPoints = km.clustering(inter_points);
+		//std::cout << "      KMeans Result " << std::endl << std::endl;
+		this->printWaypoints();
+		vector<vector<Pos>> bf_convex_route;
+		bf_convex_route = PathPlanner::divide_waypoints(wayPoints);
 
-	double cur_area = 0;		// 현재 넓이
-	double cur_area_idx = 0;	// 현재 차량 번호
-	double cur_vec_idx = 0;	// 현재 선분 번호
-	std::cout << "PER AREA" << area_per_unit << std::endl;
-	double tt = 0;
-	for (vector<Pos>::iterator i = this->wayPoints.begin(); i < this->wayPoints.end()-1; i++) {
-		Pos pivot = *i;
-		Pos vec = *(i + 1) - *i;
-		double dist = this->getDist(vec);
-
-		// 10개로 선분 나눠서 넓이 계산
-		for (int sub_vec_idx = 0; sub_vec_idx < 10; sub_vec_idx++) {
-			Pos A, B;
-			A = pivot + vec.mul(sub_vec_idx*0.1);
-			B = pivot + vec.mul((sub_vec_idx+1)*0.1);
-			double area = this->integral(center, A, B);
-			tt += area;
-			cur_area += area;
-			//(area_per_unit * (1 - area_th) < cur_area) && (cur_area < area_per_unit* (1 + area_th))
-			if ((area_per_unit < cur_area) &&
-				(cur_area_idx + 1 != this->car_num)) {
-				std::cout << "AREA CHANGFE !!" << std::endl;
-				std::cout << B.x<<"  "<<B.y << std::endl;
-				cur_area = 0;
-				cur_area_idx++;
-				mission_vec.push_back(B);
-				route.push_back(mission_vec);
-				for (vector<Pos> ::iterator j = mission_vec.begin(); j < mission_vec.end(); j++) {
-					std::cout << "		Point " << j->x << " " << j->y << std::endl;
-				}
-				mission_vec.clear();
-				vector<Pos>().swap(mission_vec);
-				mission_vec.push_back(center);
-				mission_vec.push_back(B);
-			}
-			//if (cur_area_idx + 1 == this->car_num) break;
+		PathPlanner::printWaypoints(bf_convex_route);
+		for (vector<vector<Pos>>::iterator it = bf_convex_route.begin(); it<bf_convex_route.end();it++){
+			hgMath::QuickSort(*it, 1, it->size()-1, (*it)[0]);
+			vector<Pos> convex_route = hgMath::makeConvex(*it);
+			route.push_back(convex_route);
 		}
-		//if (cur_area_idx + 1 == this->car_num) break;
-		mission_vec.push_back(*(i + 1));
-		cur_vec_idx++;
+
+		PathPlanner::printWaypoints(route);
+
+		cout << "CARACACAR   " << this->car_num << endl;
+		cout << "SIXZER   " << route.size() << endl;
+		cout << "SIXZER   " << route.size() << endl;
+		cout << "SIXZER   " << bf_convex_route.size() << endl;
+		cout << "SIXZER   " << bf_convex_route.size() << endl;
+		//vector<int> hi = hgMath::makeConvex(route[0]);
+	
+		//cout << "COUNT!! " << _countof(hi) << endl;
+		//for (int i =0; i<)
 	}
-	route.push_back(mission_vec);
+	// 일반적인 경우
+	else{
+		this->printWaypoints();
+		double area = hgMath::integral_sum(this->wayPoints);
+		double area_per_unit = area / this->car_num;
+		double area_th = 0.2;
+		route = PathPlanner::divide_intergral_center(this->wayPoints, area_per_unit, this->car_num);
 
-	std::cout << "TOTOTOTAL  " << tt << std::endl;
 
-	for (vector<vector<Pos>> ::iterator i = route.begin(); i < route.end(); i++) {
-		std::cout << "ROUTE " << std::endl;
-		for (vector<Pos> ::iterator j = i->begin(); j < i->end(); j++) {
-			std::cout << "		Point " << j->x << " " << j->y << std::endl;
-		}
 	}
 	return route;
-	//std::cout << "AREA " << area << std::endl;
+
 }
-double Engine::getDist(Pos A) {
-	return sqrt(A.x * A.x + A.y * A.y);
-}
-double Engine::inner(Pos A, Pos B) {
-	return A.x * B.x + A.y * B.y;
-}
-double Engine::integral(Pos pivot, Pos a, Pos b){
 
-	Pos A = a - pivot;
-	Pos B = b - pivot;
-	double distA = sqrt(A.x * A.x + A.y * A.y);
-	double distB = sqrt(B.x * B.x + B.y * B.y);
-
-	double inner = this->inner(A, B);
-	double cos = inner / abs(distA * distB);
-	double sin = sqrt(1 - cos * cos);
-
-	//std::cout << "inner " << inner << std::endl;
-	//std::cout << "COS " << cos << std::endl;
-	//std::cout << "SIN " << sin << std::endl;
-	double area = sin * distA * distB * 0.5;
-	//std::cout << "DIST a " << distA << std::endl;
-	//std::cout << "DIST b " << distB << std::endl;
-	//std::cout << "AREA " << area << std::endl;
-
-	return area;
-}
-double Engine::integral_sum(vector<Pos> poses) {
-	Pos center = this->getCenterPoint(poses);
-	poses.push_back(poses[0]);
-
-	double area_total = 0;
-	for (vector<Pos>::iterator i = poses.begin(); i < poses.end()-1; i++) {
-		double area = this->integral(center, *i, *(i + 1));
-		area_total += area;
-	}
-	std::cout << "AREA_TOTAL " << area_total<< std::endl;
-
-	return area_total;
-}
-void Engine::getPath() {
-	KMean_clustering km(this->car_num, this->wayPoints.size());
-	this->wayPoints = km.clustering(wayPoints);
-	std::cout << std::endl << " ---------------------------------------------------------- " << std::endl;
-	std::cout << "      KMeans Result " << std::endl << std::endl;
-	this->printWaypoints();
-
-	//km.k = center of each waypoints group
-	//ver  = center of each waypoints group (Pos type)
-	Voronoi* vdg;
-	for (int i = 0; i < km.K_COUNT; i++) {
-		this->ver.push_back(new Pos(km.k[i].x, km.k[i].y));
-		ver_val.push_back(Pos(km.k[i].x, km.k[i].y));
-	}
-
-	
-
-	vdg = new Voronoi();
-	double minY = 0;
-	double maxY = 100;
-	this->edges = vdg->ComputeVoronoiGraph(this->ver, minY, maxY);
-	delete vdg;
-	std::cout << std::endl << " --------------------------------------------------------- " << std::endl;
-	std::cout << "      Voronoi Result " << std::endl << std::endl;
-	for (vector<VEdge>::iterator j = this->edges.begin(); j != this->edges.end(); j++)
-		std::cout << "(" << j->VertexA.x << ", " << j->VertexA.y << ")\t(" << j->VertexB.x << ", " << j->VertexB.y << ")\n";
-
-	std::cout << " -------------------- " << std::endl;
-
-	vector<vector<VEdge>> edges_vector;
-
-	for (vector<Pos*>::iterator i = this->ver.begin(); i != this->ver.end(); i++)
-	{
-		vector<VEdge> edges;
-		std::cout << "\t\tSite =  (" << (*i)->x << ", " << (*i)->y << ")\n";
-		for (vector<VEdge>::iterator j = this->edges.begin(); j != this->edges.end(); j++)
-		{
-			if (((j->Left_Site.x == (*i)->x) && (j->Left_Site.y == (*i)->y)) || ((j->Right_Site.x == (*i)->x) && (j->Right_Site.y == (*i)->y)))
-			{
-				std::cout << "(" << j->VertexA.x << ", " << j->VertexA.y << ")\t(" << j->VertexB.x << ", " << j->VertexB.y << ")\n";
-				edges.push_back(*j);
-			}
-		}
-		edges_vector.push_back(edges);
-		std::cout << "\n";
-	}
-	std::cout << std::endl << " --------------------------------------------------------- " << std::endl;
-	std::cout << "      Convexhull  Result " << std::endl << std::endl;
-	Pos center_pos;
-	center_pos.x = 50;
-	center_pos.y = 50;
-	//getInnerPoints(ver_val, edges_vector, center_pos);
-	//return 0;
-}
+// Unused
 vector<vector<VEdge>> Engine::waypoints2vector(vector<Pos> way) {
 	vector<vector<VEdge>> edges_vector(this->car_num);
 	vector<vector<Pos>> pos_vector(this->car_num);
@@ -399,79 +242,74 @@ vector<vector<VEdge>> Engine::waypoints2vector(vector<Pos> way) {
 
 	return edges_vector;
 }
+//Temp
 void Engine::printWaypoints() {
 	for (int i = 0; i < wayPoints.size(); i++) {
 		std::cout << "COORD = (" << wayPoints[i].x << " , " << wayPoints[i].y << ")  GROUP = " << wayPoints[i].group << std::endl;
 	}
-	/*for (int i = 0; i < K_COUNT; i++) {
-		std::cout << "Group " << i << " = " << "(" << k[i].x << " , " << k[i].y << ")" << std::endl;
-	}*/
-}
-Pos Engine::getCenterPoint(vector<Pos> poses) {
-	Pos center;
-	for (vector<Pos>::iterator i = poses.begin(); i < poses.end(); i++) {
-		center.x += i->x;
-		center.y += i->y;
+	std::ofstream writeFile;            //쓸 목적의 파일 선언
+	writeFile.open("text\\words.txt");
+
+
+	for (int i = 0; i < wayPoints.size(); i++) {
+		string str = to_string(int(wayPoints[i].x))+"\n";
+		writeFile.write(str.c_str(), str.size());
+		str = to_string(int(wayPoints[i].y)) + "\n";
+		writeFile.write(str.c_str(), str.size());
+		str = to_string(int(wayPoints[i].group)) + "\n";
+		writeFile.write(str.c_str(), str.size());
 	}
-	center.x /= poses.size();
-	center.y /= poses.size();
-	return center;
 }
-Pos Engine::getMidPoint(VEdge edge) {
-	Pos pos;
-	pos.x = (edge.VertexA.x + edge.VertexB.x) / 2.0;
-	pos.y = (edge.VertexA.y + edge.VertexB.y) / 2.0;
-	return pos;
+// Unused
+void Engine::getPath_voronoi() {
+	KMean_clustering km(this->car_num, this->wayPoints.size());
+	this->wayPoints = km.clustering(wayPoints);
+	std::cout << std::endl << " ---------------------------------------------------------- " << std::endl;
+	std::cout << "      KMeans Result " << std::endl << std::endl;
+	this->printWaypoints();
+
+	//km.k = center of each waypoints group
+	//ver  = center of each waypoints group (Pos type)
+	Voronoi* vdg;
+	for (int i = 0; i < km.K_COUNT; i++) {
+		this->ver.push_back(new Pos(km.k[i].x, km.k[i].y));
+		ver_val.push_back(Pos(km.k[i].x, km.k[i].y));
+	}
+
+	vdg = new Voronoi();
+	double minY = 0;
+	double maxY = 100;
+	this->edges = vdg->ComputeVoronoiGraph(this->ver, minY, maxY);
+	delete vdg;
+	std::cout << std::endl << " --------------------------------------------------------- " << std::endl;
+	std::cout << "      Voronoi Result " << std::endl << std::endl;
+	for (vector<VEdge>::iterator j = this->edges.begin(); j != this->edges.end(); j++)
+		std::cout << "(" << j->VertexA.x << ", " << j->VertexA.y << ")\t(" << j->VertexB.x << ", " << j->VertexB.y << ")\n";
+
+	std::cout << " -------------------- " << std::endl;
+
+	vector<vector<VEdge>> edges_vector;
+
+	for (vector<Pos*>::iterator i = this->ver.begin(); i != this->ver.end(); i++)
+	{
+		vector<VEdge> edges;
+		std::cout << "\t\tSite =  (" << (*i)->x << ", " << (*i)->y << ")\n";
+		for (vector<VEdge>::iterator j = this->edges.begin(); j != this->edges.end(); j++)
+		{
+			if (((j->Left_Site.x == (*i)->x) && (j->Left_Site.y == (*i)->y)) || ((j->Right_Site.x == (*i)->x) && (j->Right_Site.y == (*i)->y)))
+			{
+				std::cout << "(" << j->VertexA.x << ", " << j->VertexA.y << ")\t(" << j->VertexB.x << ", " << j->VertexB.y << ")\n";
+				edges.push_back(*j);
+			}
+		}
+		edges_vector.push_back(edges);
+		std::cout << "\n";
+	}
+	std::cout << std::endl << " --------------------------------------------------------- " << std::endl;
+	std::cout << "      Convexhull  Result " << std::endl << std::endl;
+	Pos center_pos;
+	center_pos.x = 50;
+	center_pos.y = 50;
+	//getInnerPoints(ver_val, edges_vector, center_pos);
+	//return 0;
 }
-float innerProduct(Pos cluster_center, Pos edge_center, Pos center) {
-	std::cout << "A " << cluster_center.x << "  " << cluster_center.y << std::endl;
-	std::cout << "B " << edge_center.x << "  " << edge_center.y << std::endl;
-	std::cout << "C " << center.x << "  " << center.y << std::endl;
-
-	Pos vecA;
-	Pos vecB;
-	vecA.x = center.x - cluster_center.x;
-	vecA.y = center.y - cluster_center.y;
-
-	vecB.x = edge_center.x - cluster_center.x;
-	vecB.y = edge_center.y - cluster_center.y;
-
-	float th1;
-	float th2;
-	th1 = atan2(vecA.y, vecA.x) * 180 / 3.141592;
-	th2 = atan2(vecB.y, vecB.x) * 180 / 3.141592;
-	std::cout << "DEG = " << th1 << "  " << th2 << std::endl;
-	float re_deg = abs(th1 - th2);
-	while (re_deg >180)
-		re_deg -= 180;
-	std::cout << "REDEG = " << re_deg << std::endl;
-
-	return re_deg;
-}
-
-
-
-
-// right가 left의 반시계 방향에 있으면 true이다.
-// true if right is counterclockwise to left.
-Pos p;
-
-
-//int main(void) {
-//
-//	Pos ps[5];
-//
-//	ps[0].x = 2;    ps[0].y = 0;
-//	ps[1].x = 1;    ps[1].y = 2;
-//	ps[2].x = 4;    ps[2].y = 0;
-//	ps[3].x = 5;    ps[3].y = 2;
-//	ps[4].x = 3;    ps[4].y = 4;
-//
-//	p = ps[0];
-//	QuickSort(ps, 1, 4);
-//
-//	for (int i = 0; i < 5; ++i) {
-//		printf("(%d, %d)\n", ps[i].x, ps[i].y);
-//	}
-//
-//}
