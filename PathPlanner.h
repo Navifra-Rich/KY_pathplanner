@@ -6,9 +6,10 @@ class PathPlanner
 {
 private:
 public:
-	static vector<vector<Pos>> divide_intergral_center(vector<Pos>, double, int);
-	static vector<vector<Pos>> divide_waypoints(const vector<Pos>);
-	static vector<Pos> getInnerPoint_polygon(vector<Pos>, int width = 100, int height = 100);
-	static void printWaypoints(vector<vector<Pos>>);
+	static std::vector<std::vector<Pos>> divide_intergral_center(std::vector<Pos>, double, int);
+	static std::vector<std::vector<Pos>> divide_waypoints(const std::vector<Pos>);
+	static std::vector<Pos> getInnerPoint_polygon(std::vector<Pos>, int width = 1000, int height = 1000);
+	static void printWaypoints(std::vector<std::vector<Pos>>);
+	static void printPathpoints(std::vector<Pos>);
 };
 

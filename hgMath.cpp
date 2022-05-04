@@ -1,12 +1,13 @@
 #include "hgMath.h"
 #include<iostream>
+#include "opencv2/opencv.hpp"
+#include "opencv2/imgproc.hpp"
 long long hgMath::dist(const Pos* p1, const Pos* p2) {
 	return (long long)(p1->x - p2->x) * (p1->x - p2->x) + (long long)(p1->y - p2->y) * (p1->y - p2->y);
 }
 int hgMath::ccw(const Pos* p1, const Pos* p2, const Pos* p3) {
 
 	int cross_product = (p2->x - p1->x) * (p3->y - p1->y) - (p3->x - p1->x) * (p2->y - p1->y);
-
 	if (cross_product > 0) {
 		return 1;
 	}
@@ -31,7 +32,56 @@ int hgMath::comparator(const Pos* left, const Pos* right, const Pos p) {
 	}
 	return ret;
 }
-void hgMath::QuickSort(vector<Pos>& a, int lo, int hi, Pos init) {
+double ccw(Pos& A, Pos& B, Pos& C) {
+	Pos BO = B - A;
+	Pos CO = C - A;
+	return ((double)BO.x * (double)CO.y - (double)BO.y * (double)CO.x);
+}
+bool leftTurn(Pos& A, Pos& B, Pos& C) {
+
+	return ccw(A, B, C) > 0;
+}
+bool comp(Pos& A, Pos& B, Pos* p)
+{
+	Pos AO = A - p[0];
+	Pos BO = B - p[0];
+
+	double outerProduct = ((double)AO.x * (double)BO.y - (double)AO.y * (double)BO.x);
+	if (outerProduct != 0)
+		return (outerProduct > 0);
+	if (A.y != B.y)
+		return A.y < B.y;
+	return A.x < B.x;
+}
+void quickSortByAngle(int first, int last, Pos* p)
+{
+	if (first >= last) return;
+
+	int pivot = first;
+	int i = first + 1;
+	int j = last;
+
+	while (i <= j)
+	{
+		while (comp(p[i], p[pivot], p) && i <= last) i++;
+		while (!comp(p[j], p[pivot], p) && j > first) j--;
+
+		if (i >= j) break;
+
+		Pos tmp = p[i];
+		p[i] = p[j];
+		p[j] = tmp;
+	}
+
+	Pos tmp = p[j];
+	p[j] = p[pivot];
+	p[pivot] = tmp;
+
+	quickSortByAngle(first, j - 1, p);
+	quickSortByAngle(j + 1, last, p);
+}
+
+void hgMath::QuickSort(std::vector<Pos>& a, int lo, int hi, Pos init) {
 	if (hi - lo <= 0) {
 		return;
 	}
@@ -100,7 +150,7 @@ double hgMath::integral_sum(vector<Pos> poses) {
 	poses.push_back(poses[0]);
 
 	double area_total = 0;
-	for (vector<Pos>::iterator i = poses.begin(); i < poses.end() - 1; i++) {
+	for (std::vector<Pos>::iterator i = poses.begin(); i < poses.end() - 1; i++) {
 		double area = hgMath::integral(center, *i, *(i + 1));
 		area_total += area;
 	}
@@ -110,7 +160,7 @@ double hgMath::integral_sum(vector<Pos> poses) {
 }
 Pos hgMath::getCenterPoint(vector<Pos> poses) {
 	Pos center;
-	for (vector<Pos>::iterator i = poses.begin(); i < poses.end(); i++) {
+	for (std::vector<Pos>::iterator i = poses.begin(); i < poses.end(); i++) {
 		center.x += i->x;
 		center.y += i->y;
 	}
@@ -140,7 +190,7 @@ bool hgMath::getIntersectPoint(const Pos& AP1, const Pos& AP2,
 
 	return true;
 }
-vector<Pos> hgMath::PCA(vector<Pos> points) {
+std::vector<Pos> hgMath::PCA(std::vector<Pos> points) {
 	//points.clear();
 	//points.push_back(Pos(170, 70));
 	//points.push_back(Pos(150, 45));
@@ -150,7 +200,7 @@ vector<Pos> hgMath::PCA(vector<Pos> points) {
 
 	int n = points.size();
 
-	vector<Pos> pca;
+	std::vector<Pos> pca;
 	double a, b, c, d, x_sum, y_sum;
 	a = b = c = d = x_sum = y_sum = 0;
 	for (int i = 0; i < n; i++) {
@@ -176,41 +226,103 @@ vector<Pos> hgMath::PCA(vector<Pos> points) {
 }
 
 
-vector<Pos> hgMath::makeConvex(vector<Pos> poses) {
-	int stack[100];
-	vector<Pos> stack2;
+std::vector<Pos> hgMath::makeConvex(std::vector<Pos> p) {
+	int size = p.size();
+	cout << "INXONVEX" << endl;
+	int stack[99999];
+	double minX = 1000000000, minY = 1000000000;
+	int minIdx = 0;
+	for (int i = 0; i < size; i++) {
 
+		if (minY > p[i].y || (minY == p[i].y && minX > p[i].x))
+		{
+			minX = p[i].x;
+			minY = p[i].y;
+			minIdx = i;
+		}
+	}
+	p[minIdx].x = p[0].x;
+	p[minIdx].y = p[0].y;
+	p[0].x = minX;
+	p[0].y = minY;
 
+	quickSortByAngle(1, size - 1, &p[0]);
 	int idx = -1;
 	stack[++idx] = 0;
 	stack[++idx] = 1;
 
 	int next = 2;
-	while (next < poses.size())
+	while (next < size)
 	{
+
 		while ((idx + 1) >= 2)
 		{
 			int second = stack[idx--];
 			int first = stack[idx];
-			cout << "FIRST " << poses[first].x << " " << poses[first].y << endl;
-			cout << "Secon " << poses[second].x << " " << poses[second].y << endl;
-			cout << "Next  " << poses[next].x << " " << poses[next].y << endl;
-			if (hgMath::ccw(&poses[first], &poses[second], &poses[next])>0)
+
+			if (leftTurn(p[first], p[second], p[next]))
 			{
-				cout << "HERE!! "<< endl;
 				stack[++idx] = second;
 				break;
 			}
 		}
 		stack[++idx] = next++;
+		// cout<<"idx = "<<idx<<" next "<<next-1<<endl;
+
 	}
-	for (int i = 0; i < idx+1; i++) {
-		cout << "IDX " << stack[i] << endl;
-		cout << "		 " << poses[stack[i]].x<<" "<< poses[stack[i]].y << endl;
-		stack2.push_back(poses[stack[i]]);
+	std::vector<Pos> stack2;
+	for (int i = 0; i < idx; i++) {
+		//cout << "IDX " << stack[i] << endl;
+		//cout << "		 " << poses[stack[i]].x<<" "<< poses[stack[i]].y << endl;
+		stack2.push_back(p[stack[i]]);
 	}
 	return stack2;
-	//return idx + 1;
+
+	//convec_publish(p, stack, idx);
+
+
+	//int stack[1000];
+	//std::vector<Pos> stack2;
+	//Pos minPose(99999,99999);
+	//for (std::vector<Pos>::iterator it = poses.begin(); it < poses.end(); it++) {
+	//	if (it->y < minPose.y or (it->y == minPose.y and it->x < minPose.x)) {
+	//		minPose.y = it->y;
+	//		minPose.x = it->x;
+	//	}
+	//}
+	//std::cout << "POses " << poses[0].x << " " << poses[0].y << std::endl;
+	//poses[0] = minPose;
+	//std::cout << "POses " << poses[0].x << " " << poses[0].y << std::endl;
+	//hgMath::QuickSort(poses, 1, poses.size()-1, poses[0]);
+	//int idx = -1;
+	//stack[++idx] = 0;
+	//stack[++idx] = 1;
+	//
+	//int next = 2;
+	//while (next < poses.size())
+	//{
+	//	while ((idx + 1) >= 2)
+	//	{
+	//		int second = stack[idx--];
+	//		int first = stack[idx];
+	//		//cout << "FIRST " << poses[first].x << " " << poses[first].y << endl;
+	//		//cout << "Secon " << poses[second].x << " " << poses[second].y << endl;
+	//		//cout << "Next  " << poses[next].x << " " << poses[next].y << endl;
+	//		if (hgMath::ccw(&poses[first], &poses[second], &poses[next])>0)
+	//		{
+	//			stack[++idx] = second;
+	//			break;
+	//		}
+	//	}
+	//	stack[++idx] = next++;
+	//}
+	//for (int i = 0; i < idx; i++) {
+	//	//cout << "IDX " << stack[i] << endl;
+	//	//cout << "		 " << poses[stack[i]].x<<" "<< poses[stack[i]].y << endl;
+	//	stack2.push_back(poses[stack[i]]);
+	//}
+	//return stack2;
+	////return idx + 1;
 }
 
 //vector<int> hgMath::makeConvex(const vector<Pos> poses){

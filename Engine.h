@@ -6,18 +6,18 @@ class Engine
 {
 private:
 	int car_num = 0;
-	vector<Pos*> ver;	// Voronoi center
-	vector<Pos> ver_val;
-	vector<VEdge> edges;
-	//vector<VEdge> final_edges;
+	std::vector<Pos*> ver;	// Voronoi center
+	std::vector<Pos> ver_val;
+	std::vector<VEdge> edges;
+	//std::vector<VEdge> final_edges;
 public:
-	vector<Pos> wayPoints;
+	std::vector<Pos> wayPoints;
 	void setCarnum(int car_num);
 	void setWaypointRand(int waypoint_num);
 	void getPath_voronoi();
-	vector<vector<Pos>> getPath2();
-	void printWaypoints();
+	std::vector<std::vector<Pos>> getPath2();
+	void printWaypoints(string);
 
-	vector<vector<VEdge>> waypoints2vector(vector<Pos> way);
+	std::vector<std::vector<VEdge>> waypoints2vector(std::vector<Pos> way);
 };
 

@@ -13,7 +13,7 @@ int main() {
 	//engine.waypoints2vector(engine.wayPoints);
 	//engine.waypoints2vector(engine.area_center);
 
-	engine.setCarnum(5);
+	engine.setCarnum(4);
 	engine.setWaypointRand(10);
 	engine.getPath2();
 

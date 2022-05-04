@@ -16,14 +16,14 @@ public:
 	const int K_COUNT;// = 2;
 	const int DATA_COUNT;// = 5;
 	KMean_clustering(int k, int d): K_COUNT(k), DATA_COUNT(d) {}
-	vector< Pos > datas;
+	std::vector< Pos > datas;
 	Pos* k = new Pos[K_COUNT];
 
 	void print() {
 
 
 	}
-	vector< Pos > clustering(vector< Pos > waypoints) {
+	std::vector< Pos > clustering(std::vector< Pos > waypoints) {
 		cout << " --------------------------------------------------------- " << endl;
 		cout << "     Hyper parameter" << endl << endl;
 		cout << "K = " << K_COUNT << endl << endl;
@@ -31,7 +31,7 @@ public:
 		//Pos* k = new Pos[K_COUNT];
 		Pos* center = new Pos[K_COUNT];
 		double* count_Group = new double[K_COUNT];
-		vector< double >* distance = new vector< double >[K_COUNT];
+		std::vector< double >* distance = new std::vector< double >[K_COUNT];
 
 		//for (int i = 0; i < DATA_COUNT; i++) {
 		//	Pos tmp;
