@@ -36,15 +36,15 @@ std::vector<Pos> PathPlanner::getInnerPoint_polygon(std::vector<Pos> wayPoints, 
 			//if (intersect_count == 0) 
 
 			if (intersect_count % 2 == 1) {
-				//cout << "InterSected!! HERE!! " << here.x << " " << here.y << endl; 
-				//<< "   INTER!! " << intersect.x << " " << intersect.y << endl;
+				//std::cout << "InterSected!! HERE!! " << here.x << " " << here.y << std::endl; 
+				//<< "   INTER!! " << intersect.x << " " << intersect.y << std::endl;
 				interPoints.push_back(here);
 			}
 			//else
-				//cout << "NO!!!!!!!!!!!! HERE!! " << here.x << " " << here.y << endl;
+				//std::cout << "NO!!!!!!!!!!!! HERE!! " << here.x << " " << here.y << std::endl;
 		}
 	}
-	cout << "Inter Point " << interPoints.size() << endl;
+	std::cout << "Inter Point " << interPoints.size() << std::endl;
 	return interPoints;
 }
 // 적분 기반 웨이포인트 반환
@@ -74,14 +74,14 @@ std::vector<std::vector<Pos>> PathPlanner::divide_intergral_center(std::vector<P
 			//(area_per_unit * (1 - area_th) < cur_area) && (cur_area < area_per_unit* (1 + area_th))
 			if ((area_per_unit < cur_area) &&
 				(cur_area_idx + 1 != car_num)) {
-				cout << "AREA CHANGFE !!" << endl;
-				cout << B.x << "  " << B.y << endl;
+				std::cout << "AREA CHANGFE !!" << std::endl;
+				std::cout << B.x << "  " << B.y << std::endl;
 				cur_area = 0;
 				cur_area_idx++;
 				mission_vec.push_back(B);
 				route.push_back(mission_vec);
 				for (std::vector<Pos> ::iterator j = mission_vec.begin(); j < mission_vec.end(); j++) {
-					cout << "		Point " << j->x << " " << j->y << endl;
+					std::cout << "		Point " << j->x << " " << j->y << std::endl;
 				}
 				mission_vec.clear();
 				std::vector<Pos>().swap(mission_vec);
@@ -101,13 +101,13 @@ std::vector<std::vector<Pos>> PathPlanner::divide_intergral_center(std::vector<P
 void PathPlanner::printWaypoints(std::vector<std::vector<Pos>> wayPoints) {
 	int index = 0;
 	for (std::vector<std::vector<Pos>> ::iterator i = wayPoints.begin(); i < wayPoints.end(); i++) {
-		cout << "ROUTE " << endl;
+		std::cout << "ROUTE " << std::endl;
 		std::ofstream writeFile;            //쓸 목적의 파일 선언
 		string fileName = to_string(index);
 		writeFile.open("text\\words" + fileName + ".txt");
 
 		for (std::vector<Pos> ::iterator j = i->begin(); j < i->end(); j++) {
-			cout << "		Point " << j->x << " " << j->y << endl;
+			std::cout << "		Point " << j->x << " " << j->y << std::endl;
 			string str = to_string(int((*j).x)) + "\n";
 			writeFile.write(str.c_str(), str.size());
 			str = to_string(int((*j).y)) + "\n";
@@ -121,6 +121,6 @@ void PathPlanner::printWaypoints(std::vector<std::vector<Pos>> wayPoints) {
 // Print only one path
 void PathPlanner::printPathpoints(std::vector<Pos> wayPoints) {
 	for (std::vector<Pos> ::iterator i = wayPoints.begin(); i < wayPoints.end(); i++) {
-		cout << "		Point " << i->x << " " << i->y << endl;
+		std::cout << "		Point " << i->x << " " << i->y << std::endl;
 	}
 }

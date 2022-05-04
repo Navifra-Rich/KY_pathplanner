@@ -24,10 +24,10 @@ public:
 
 	}
 	std::vector< Pos > clustering(std::vector< Pos > waypoints) {
-		cout << " --------------------------------------------------------- " << endl;
-		cout << "     Hyper parameter" << endl << endl;
-		cout << "K = " << K_COUNT << endl << endl;
-		cout << "Input Count = " << DATA_COUNT << endl << endl;
+		std::cout << " --------------------------------------------------------- " << std::endl;
+		std::cout << "     Hyper parameter" << std::endl << std::endl;
+		std::cout << "K = " << K_COUNT << std::endl << std::endl;
+		std::cout << "Input Count = " << DATA_COUNT << std::endl << std::endl;
 		//Pos* k = new Pos[K_COUNT];
 		Pos* center = new Pos[K_COUNT];
 		double* count_Group = new double[K_COUNT];
@@ -37,11 +37,11 @@ public:
 		//	Pos tmp;
 		//	tmp.x = (double)(rand() % 100);
 		//	tmp.y = (double)(rand() % 100);
-		//	cout << "(" << tmp.x << "," << tmp.y << ")  ";
+		//	std::cout << "(" << tmp.x << "," << tmp.y << ")  ";
 		//	datas.push_back(tmp);
 		//}
-		cout<< endl;
-		//cout << " --------------------------------------------------------- " << endl;
+		std::cout<< std::endl;
+		//std::cout << " --------------------------------------------------------- " << std::endl;
 		//random k, init
 		for (int i = 0; i < K_COUNT; i++)
 		{
@@ -52,7 +52,7 @@ public:
 		}
 		bool loop = true;
 		while (loop) { //when the k-Positions are all same with next Position.
-			//cout<<"
+			//std::cout<<"
 			//center init
 			for (int i = 0; i < K_COUNT; i++) {
 				center[i].x = 0;
@@ -92,13 +92,13 @@ public:
 				if (same_count == K_COUNT) {
 					loop = false;
 				}
-				//cout << fixed << setprecision(2);
-				//cout << "(" << k[i].x << "," << k[i].y << ") ";
+				//std::cout << fixed << setprecision(2);
+				//std::cout << "(" << k[i].x << "," << k[i].y << ") ";
 			}
-			//cout << endl;
+			//std::cout << std::endl;
 
 		}//end of loop
-		//cout << " --------------------------------------------------------- " << endl;
+		//std::cout << " --------------------------------------------------------- " << std::endl;
 		for (int i = 0; i < waypoints.size(); i++) {
 			double min = distance[0][i];
 			int min_j = 0;
@@ -109,9 +109,9 @@ public:
 				}
 			}
 			waypoints[i].group = min_j;
-			//cout << i<<" "<<min_j << " "<<endl;
+			//std::cout << i<<" "<<min_j << " "<<std::endl;
 		}
-		//cout << endl;
+		//std::cout << std::endl;
 		return waypoints;
 
 	}

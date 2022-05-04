@@ -8,7 +8,7 @@ void Engine::setCarnum(int car_num) {
 	this->car_num = car_num;
 }
 void Engine::setWaypointRand(int waypoint_num) {
-	cout << "Way Points" << endl<<endl;
+	std::cout << "Way Points" << std::endl<<std::endl;
 	//3개: (280, 475)  (150.096, 250)  (409.904, 250)
 	//	4개 : (280, 475)  (130, 325)  (280, 175)  (430, 325)
 	//	5개 : (280, 475)  (137.342, 371.353)  (191.832, 203.647)  (368.168, 203.647)  (422.658, 371.353)
@@ -72,24 +72,24 @@ void Engine::setWaypointRand(int waypoint_num) {
 std::vector<std::vector<Pos>> Engine::getPath2() {
 
 	//std::vector<int> hi = hgMath::makeConvex(this->wayPoints);
-	//cout << "RRR" << endl;
+	//std::cout << "RRR" << std::endl;
 	//
 	//std::vector<std::vector<Pos>> rere;
 	//return rere;
 	Pos center = hgMath::getCenterPoint(this->wayPoints);
 
-	cout << "Center = " << center.x << " " << center.y << endl;
+	std::cout << "Center = " << center.x << " " << center.y << std::endl;
 
 	PathPlanner::printPathpoints(this->wayPoints);
 
 	//hgMath::QuickSort(this->wayPoints, 1, this->wayPoints.size() - 1, this->wayPoints[0]);
-	cout << "HERE!!" << endl;
+	std::cout << "HERE!!" << std::endl;
 	PathPlanner::printPathpoints(this->wayPoints);
 
 	std::vector<Pos> inter_points = PathPlanner::getInnerPoint_polygon(wayPoints);
-	cout << inter_points[0].x << " " << inter_points[0].y << endl;
-	cout << inter_points[0].x << " " << inter_points[0].y << endl;
-	cout << "N = " << inter_points.size() << endl;
+	std::cout << inter_points[0].x << " " << inter_points[0].y << std::endl;
+	std::cout << inter_points[0].x << " " << inter_points[0].y << std::endl;
+	std::cout << "N = " << inter_points.size() << std::endl;
 
 	std::vector<Pos> pca = hgMath::PCA(inter_points);
 	if (pca[0].x == 0) pca[0].x += 0.000001;
@@ -97,18 +97,17 @@ std::vector<std::vector<Pos>> Engine::getPath2() {
 	double ratio = pca[0].x / (pca[1].y);
 	if (ratio < 1) ratio = 1 / (ratio);
 
-	cout << "RATIO " << ratio << endl;
+	std::cout << "RATIO " << ratio << std::endl;
 
 	std::vector<std::vector<Pos>> route;
 	//return route;
 	// 공분산 큰 경우
 	if (ratio > 0) {
-		cout << "SIBVAL!!!!!!!!!!" << endl;
 		//KMean_clustering km(this->car_num, wayPoints.size());
 		//this->wayPoints = km.clustering(wayPoints);
 		KMean_clustering km(this->car_num, inter_points.size());
 		this->wayPoints = km.clustering(inter_points);
-		//cout << "      KMeans Result " << endl << endl;
+		//std::cout << "      KMeans Result " << std::endl << std::endl;
 		std::vector<std::vector<Pos>> bf_convex_route;
 		bf_convex_route = PathPlanner::divide_waypoints(wayPoints);
 
@@ -127,24 +126,24 @@ std::vector<std::vector<Pos>> Engine::getPath2() {
 			//}
 			//temp_idx++;
 		}
-		//cout << My_Mat1 << endl;
+		//std::cout << My_Mat1 << std::endl;
 
 		//cv::Mat drawing = cv::Mat::zeros(500,500, CV_8UC1);
 		// 소스 이미지로 부터 윤곽선을 찾고, contour 벡터 안에 Point정보를 저장한다.
 		//for (int i = 0; i < contours.size(); i++)
 		//{
-		//	cout << contours[i] << endl;
+		//	std::cout << contours[i] << std::endl;
 		//	//cv::Scalar color = cv::Scalar(rng.uniform(0, 256), rng.uniform(0, 256), rng.uniform(0, 256));
 		//	//drawContours(drawing, contours, (int)i, color, 2, cv::LINE_8, hierarchy, 0);
 		//}
-		cout << "CARACACAR   " << this->car_num << endl;
-		cout << "SIXZER   " << route.size() << endl;
-		cout << "SIXZER   " << route.size() << endl;
-		cout << "SIXZER   " << bf_convex_route.size() << endl;
-		cout << "SIXZER   " << bf_convex_route.size() << endl;
+		std::cout << "CARACACAR   " << this->car_num << std::endl;
+		std::cout << "SIXZER   " << route.size() << std::endl;
+		std::cout << "SIXZER   " << route.size() << std::endl;
+		std::cout << "SIXZER   " << bf_convex_route.size() << std::endl;
+		std::cout << "SIXZER   " << bf_convex_route.size() << std::endl;
 		//std::vector<int> hi = hgMath::makeConvex(route[0]);
 
-		//cout << "COUNT!! " << _countof(hi) << endl;
+		//std::cout << "COUNT!! " << _countof(hi) << std::endl;
 		//for (int i =0; i<)
 	}
 	// 일반적인 경우
@@ -164,8 +163,8 @@ std::vector<std::vector<VEdge>> Engine::waypoints2vector(std::vector<Pos> way) {
 	std::vector<std::vector<Pos>> pos_vector(this->car_num);
 	std::vector<Pos> area_center;	// Voronoi center
 
-	//cout << "SIZE " << way.size() << endl;
-	//cout << "SIZE " << this->car_num <<endl;
+	//std::cout << "SIZE " << way.size() << std::endl;
+	//std::cout << "SIZE " << this->car_num <<std::endl;
 	
 	for (std::vector<Pos>::iterator i = way.begin(); i != way.end(); i++) {
 		//pos_vector[i->group].push_back(Pos(i->x, i->y));
@@ -185,7 +184,7 @@ std::vector<std::vector<VEdge>> Engine::waypoints2vector(std::vector<Pos> way) {
 		area_center[g].y /= count;
 	}
 	//for (std::vector<Pos>::iterator k = area_center.begin(); k != area_center.end(); k++) {
-	//	cout << "!! " << k->x << " " << k->y << endl;
+	//	std::cout << "!! " << k->x << " " << k->y << std::endl;
 	//}
 	int group = 0;
 	for (std::vector<Pos*>::iterator i = this->ver.begin(); i != this->ver.end(); i++)
@@ -201,7 +200,7 @@ std::vector<std::vector<VEdge>> Engine::waypoints2vector(std::vector<Pos> way) {
 
 				//for (std::vector<Pos>::iterator k = area_center.begin(); k != area_center.end(); k++) {
 				Pos k = area_center[group];
-				//cout << "k pose = " << k.x << "  " << k.y << endl;
+				//std::cout << "k pose = " << k.x << "  " << k.y << std::endl;
 
 				AB.x = j->VertexB.x - j->VertexA.x;
 				AB.y = j->VertexB.y - j->VertexA.y;
@@ -222,30 +221,30 @@ std::vector<std::vector<VEdge>> Engine::waypoints2vector(std::vector<Pos> way) {
 					newPose = tempPose;
 					min_dist = dist;
 				}
-				//cout << "Added pose = "<<newPose.x<<"  "<< newPose.y<< endl;
+				//std::cout << "Added pose = "<<newPose.x<<"  "<< newPose.y<< std::endl;
 				pos_vector[group].push_back(newPose);
 				//pos_vector[group].push_back(Pos((j->VertexA.x+ j->VertexB.x)/2, (j->VertexA.y+ j->VertexB.y)/2));
 			}
 		}
-		//cout << "POSE vector  "<<group << endl;
+		//std::cout << "POSE vector  "<<group << std::endl;
 		for (std::vector<Pos>::iterator i = pos_vector[group].begin(); i != pos_vector[group].end(); i++) {
-			//cout << "!! " << i->x << " " << i->y << endl;
+			//std::cout << "!! " << i->x << " " << i->y << std::endl;
 		}
 		group++;
 	}
 	group = 0;
 	for (std::vector<std::vector<Pos>>::iterator i = pos_vector.begin(); i != pos_vector.end(); i++) {
-		cout << "------------ Start" << endl;
+		std::cout << "------------ Start" << std::endl;
 		for (std::vector<Pos>::iterator a = i->begin(); a != i->end(); a++) {
-			cout << a->x << " " << a->y << endl;
+			std::cout << a->x << " " << a->y << std::endl;
 		}
 
-		cout << "------------ SOrt" << endl;
+		std::cout << "------------ SOrt" << std::endl;
 		//QuickSort(*i, 1, i->size()-1);
 		for (std::vector<Pos>::iterator a = i->begin(); a != i->end(); a++) {
-			cout << a->x << " " << a->y << endl;
+			std::cout << a->x << " " << a->y << std::endl;
 		}
-		cout << "------------" << endl;
+		std::cout << "------------" << std::endl;
 		for (std::vector<Pos>::iterator j = i->begin(); j != i->end(); j++) {
 			VEdge  edges;
 			edges.VertexA = Pos(j->x, j->y);
@@ -262,14 +261,14 @@ std::vector<std::vector<VEdge>> Engine::waypoints2vector(std::vector<Pos> way) {
 	}
 	for (std::vector<std::vector<VEdge>>::iterator i = edges_vector.begin(); i != edges_vector.end(); i++)
 	{
-		cout << "GROUP " << endl;
+		std::cout << "GROUP " << std::endl;
 
 		for (std::vector<VEdge>::iterator j = i->begin(); j != i->end(); j++)
 		{
-			cout << "vector" << endl;
-			cout << "		vector " << j->VertexA.x << " " << j->VertexA.y << endl;
-			cout << "		vector " << j->VertexB.x << " " << j->VertexB.y << endl;
-			//cout << "		vector "<<j->VertexA << " " << " " << j->VertexB << endl;
+			std::cout << "vector" << std::endl;
+			std::cout << "		vector " << j->VertexA.x << " " << j->VertexA.y << std::endl;
+			std::cout << "		vector " << j->VertexB.x << " " << j->VertexB.y << std::endl;
+			//std::cout << "		vector "<<j->VertexA << " " << " " << j->VertexB << std::endl;
 		}
 	}
 
@@ -278,7 +277,7 @@ std::vector<std::vector<VEdge>> Engine::waypoints2vector(std::vector<Pos> way) {
 //Temp
 void Engine::printWaypoints(string fileName) {
 	for (int i = 0; i < wayPoints.size(); i++) {
-		cout << "COORD = (" << wayPoints[i].x << " , " << wayPoints[i].y << ")  GROUP = " << wayPoints[i].group << endl;
+		std::cout << "COORD = (" << wayPoints[i].x << " , " << wayPoints[i].y << ")  GROUP = " << wayPoints[i].group << std::endl;
 	}
 	std::ofstream writeFile;            //쓸 목적의 파일 선언
 	writeFile.open("text\\words"+fileName+".txt");
@@ -297,8 +296,8 @@ void Engine::printWaypoints(string fileName) {
 void Engine::getPath_voronoi() {
 	KMean_clustering km(this->car_num, this->wayPoints.size());
 	this->wayPoints = km.clustering(wayPoints);
-	cout << endl << " ---------------------------------------------------------- " << endl;
-	cout << "      KMeans Result " << endl << endl;
+	std::cout << std::endl << " ---------------------------------------------------------- " << std::endl;
+	std::cout << "      KMeans Result " << std::endl << std::endl;
 	//this->printWaypoints();
 
 	//km.k = center of each waypoints group
@@ -314,32 +313,32 @@ void Engine::getPath_voronoi() {
 	double maxY = 100;
 	this->edges = vdg->ComputeVoronoiGraph(this->ver, minY, maxY);
 	delete vdg;
-	cout << endl << " --------------------------------------------------------- " << endl;
-	cout << "      Voronoi Result " << endl << endl;
+	std::cout << std::endl << " --------------------------------------------------------- " << std::endl;
+	std::cout << "      Voronoi Result " << std::endl << std::endl;
 	for (std::vector<VEdge>::iterator j = this->edges.begin(); j != this->edges.end(); j++)
-		cout << "(" << j->VertexA.x << ", " << j->VertexA.y << ")\t(" << j->VertexB.x << ", " << j->VertexB.y << ")\n";
+		std::cout << "(" << j->VertexA.x << ", " << j->VertexA.y << ")\t(" << j->VertexB.x << ", " << j->VertexB.y << ")\n";
 
-	cout << " -------------------- " << endl;
+	std::cout << " -------------------- " << std::endl;
 
 	std::vector<std::vector<VEdge>> edges_vector;
 
 	for (std::vector<Pos*>::iterator i = this->ver.begin(); i != this->ver.end(); i++)
 	{
 		std::vector<VEdge> edges;
-		cout << "\t\tSite =  (" << (*i)->x << ", " << (*i)->y << ")\n";
+		std::cout << "\t\tSite =  (" << (*i)->x << ", " << (*i)->y << ")\n";
 		for (std::vector<VEdge>::iterator j = this->edges.begin(); j != this->edges.end(); j++)
 		{
 			if (((j->Left_Site.x == (*i)->x) && (j->Left_Site.y == (*i)->y)) || ((j->Right_Site.x == (*i)->x) && (j->Right_Site.y == (*i)->y)))
 			{
-				cout << "(" << j->VertexA.x << ", " << j->VertexA.y << ")\t(" << j->VertexB.x << ", " << j->VertexB.y << ")\n";
+				std::cout << "(" << j->VertexA.x << ", " << j->VertexA.y << ")\t(" << j->VertexB.x << ", " << j->VertexB.y << ")\n";
 				edges.push_back(*j);
 			}
 		}
 		edges_vector.push_back(edges);
-		cout << "\n";
+		std::cout << "\n";
 	}
-	cout << endl << " --------------------------------------------------------- " << endl;
-	cout << "      Convexhull  Result " << endl << endl;
+	std::cout << std::endl << " --------------------------------------------------------- " << std::endl;
+	std::cout << "      Convexhull  Result " << std::endl << std::endl;
 	Pos center_pos;
 	center_pos.x = 50;
 	center_pos.y = 50;

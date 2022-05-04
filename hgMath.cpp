@@ -154,7 +154,7 @@ double hgMath::integral_sum(vector<Pos> poses) {
 		double area = hgMath::integral(center, *i, *(i + 1));
 		area_total += area;
 	}
-	//cout << "AREA_TOTAL " << area_total << endl;
+	//std::cout << "AREA_TOTAL " << area_total << std::endl;
 
 	return area_total;
 }
@@ -215,20 +215,20 @@ std::vector<Pos> hgMath::PCA(std::vector<Pos> points) {
 		c += (points[i].y-y_mean) * (points[i].x-x_mean);
 		d += (points[i].y-y_mean) * (points[i].y-y_mean);
 	}
-	cout << x_mean << " " << y_mean << endl;
-	cout << a << " " << b << " " << c << " " << d << endl;
+	std::cout << x_mean << " " << y_mean << std::endl;
+	std::cout << a << " " << b << " " << c << " " << d << std::endl;
 	Pos pc1(a / n, b / n);
 	Pos pc2(c / n, d / n);
 	pca.push_back(pc1);
 	pca.push_back(pc2);
-	cout << " PCA " << pca[0].x << "  " << pca[0].y << "  " << pca[1].x << "  " << pca[1].y << endl;
+	std::cout << " PCA " << pca[0].x << "  " << pca[0].y << "  " << pca[1].x << "  " << pca[1].y << std::endl;
 	return pca;
 }
 
 
 std::vector<Pos> hgMath::makeConvex(std::vector<Pos> p) {
 	int size = p.size();
-	cout << "INXONVEX" << endl;
+	std::cout << "INXONVEX" << std::endl;
 	int stack[99999];
 	double minX = 1000000000, minY = 1000000000;
 	int minIdx = 0;
@@ -267,13 +267,13 @@ std::vector<Pos> hgMath::makeConvex(std::vector<Pos> p) {
 			}
 		}
 		stack[++idx] = next++;
-		// cout<<"idx = "<<idx<<" next "<<next-1<<endl;
+		// std::cout<<"idx = "<<idx<<" next "<<next-1<<std::endl;
 
 	}
 	std::vector<Pos> stack2;
 	for (int i = 0; i < idx; i++) {
-		//cout << "IDX " << stack[i] << endl;
-		//cout << "		 " << poses[stack[i]].x<<" "<< poses[stack[i]].y << endl;
+		//std::cout << "IDX " << stack[i] << std::endl;
+		//std::cout << "		 " << poses[stack[i]].x<<" "<< poses[stack[i]].y << std::endl;
 		stack2.push_back(p[stack[i]]);
 	}
 	return stack2;
@@ -305,9 +305,9 @@ std::vector<Pos> hgMath::makeConvex(std::vector<Pos> p) {
 	//	{
 	//		int second = stack[idx--];
 	//		int first = stack[idx];
-	//		//cout << "FIRST " << poses[first].x << " " << poses[first].y << endl;
-	//		//cout << "Secon " << poses[second].x << " " << poses[second].y << endl;
-	//		//cout << "Next  " << poses[next].x << " " << poses[next].y << endl;
+	//		//std::cout << "FIRST " << poses[first].x << " " << poses[first].y << std::endl;
+	//		//std::cout << "Secon " << poses[second].x << " " << poses[second].y << std::endl;
+	//		//std::cout << "Next  " << poses[next].x << " " << poses[next].y << std::endl;
 	//		if (hgMath::ccw(&poses[first], &poses[second], &poses[next])>0)
 	//		{
 	//			stack[++idx] = second;
@@ -317,8 +317,8 @@ std::vector<Pos> hgMath::makeConvex(std::vector<Pos> p) {
 	//	stack[++idx] = next++;
 	//}
 	//for (int i = 0; i < idx; i++) {
-	//	//cout << "IDX " << stack[i] << endl;
-	//	//cout << "		 " << poses[stack[i]].x<<" "<< poses[stack[i]].y << endl;
+	//	//std::cout << "IDX " << stack[i] << std::endl;
+	//	//std::cout << "		 " << poses[stack[i]].x<<" "<< poses[stack[i]].y << std::endl;
 	//	stack2.push_back(poses[stack[i]]);
 	//}
 	//return stack2;
@@ -348,11 +348,11 @@ std::vector<Pos> hgMath::makeConvex(std::vector<Pos> p) {
 //			}
 //		}
 //		stack[++idx] = next++;
-//		// cout<<"idx = "<<idx<<" next "<<next-1<<endl;
+//		// std::cout<<"idx = "<<idx<<" next "<<next-1<<std::endl;
 //
 //	}
 //	for (int i = 0; i < idx; i++) {
-//		cout << "IDX " << stack[i] << endl;
+//		std::cout << "IDX " << stack[i] << std::endl;
 //	}
 //	vector<int> stack2;
 //	return stack2;
@@ -385,7 +385,7 @@ std::vector<Pos> hgMath::makeConvex(std::vector<Pos> p) {
 //	//	idx++;
 //	//	stack.push_back(next);
 //	//	next++;
-//	//	// cout<<"idx = "<<idx<<" next "<<next-1<<endl;
+//	//	// std::cout<<"idx = "<<idx<<" next "<<next-1<<std::endl;
 //	//}
 //	//return stack;
 //}
