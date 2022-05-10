@@ -11,5 +11,8 @@ public:
 	static std::vector<Pos> getInnerPoint_polygon(std::vector<Pos>, int width = 1000, int height = 1000);
 	static void printWaypoints(std::vector<std::vector<Pos>>);
 	static void printPathpoints(std::vector<Pos>);
+	static std::vector<Pos> save_clustering_img(std::vector<Pos>);
+	static void draw_Contours();
+	//static void draw_Contours(int);
 };
 

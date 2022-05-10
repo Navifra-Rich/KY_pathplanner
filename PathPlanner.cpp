@@ -3,6 +3,9 @@
 #include<iostream>
 #include <fstream>
 #include<string>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/opencv.hpp>
 // std::vector<Pos> -> vector<vector<Pos> 분리 (그룹별로)
 std::vector<std::vector<Pos>> PathPlanner::divide_waypoints(const std::vector<Pos> wayPoints) {
 	int max_group = 0;
@@ -123,4 +126,54 @@ void PathPlanner::printPathpoints(std::vector<Pos> wayPoints) {
 	for (std::vector<Pos> ::iterator i = wayPoints.begin(); i < wayPoints.end(); i++) {
 		std::cout << "		Point " << i->x << " " << i->y << std::endl;
 	}
+}
+std::vector<Pos> PathPlanner::save_clustering_img(std::vector<Pos> points) {
+	cv::Mat img, img_th;
+	std::vector<std::vector<cv::Point>> contours;
+	img.create(1000, 1000, CV_8U);
+	for (std::vector<Pos>::iterator it = points.begin(); it < points.end(); it++) {
+			img.at<uchar>(it->x, it->y) = 5;
+	}
+	threshold(img, img_th, 10, 255, cv::THRESH_BINARY_INV);
+	findContours(img_th, contours, cv::RETR_LIST, cv::CHAIN_APPROX_NONE);
+	
+
+	// Visualization
+	cv::cvtColor(img, img, cv::COLOR_GRAY2BGR);
+	//cv::Scalar c(0, 0, 255);
+	//for (int i = 0; i < contours.size(); i++) {
+	//	cout << "IDX " << i << " SIZE " << contours[0].size() << endl;
+	//	drawContours(img, contours, i, c, 3);
+	//}
+	//cv::imshow("img", img);
+	//cv::imshow("imgth", img_th);
+	//cv::waitKey(0);
+
+	std::vector<Pos> re_vector;
+	for (std::vector<cv::Point>::iterator it = contours[0].begin(); it < contours[0].end(); it++) {
+		Pos pos(it->y, it->x);
+		re_vector.push_back(pos);
+	}
+	return re_vector;
+}
+void PathPlanner::draw_Contours() {
+	//cout << "HELLOW " << endl;
+	//cv::Mat img, img_g, crop, crop_th;
+	//img = cv::imread("C:\\Users\\admin\\Desktop\\weekly\\data\\star.png", cv::IMREAD_GRAYSCALE);
+	//crop = img(cv::Rect(50, 50, img.cols - 100, img.rows - 100) & cv::Rect(0, 0, img.cols, img.rows));
+	//threshold(crop, crop_th, 220, 255, cv::THRESH_BINARY_INV);
+	//std::vector<std::vector<cv::Point>> contours;
+	//findContours(crop_th, contours, cv::RETR_LIST, cv::CHAIN_APPROX_NONE);
+	//
+	//cv::Mat dst;
+	//cv::cvtColor(crop, dst, cv::COLOR_GRAY2BGR);
+	//cv::Scalar c(0, 0, 255);
+	//
+	//for (int i = 0; i < contours.size(); i++) {
+	//	drawContours(dst, contours, i, c, 3);
+	//}
+	//cv::imshow("img", img);
+	//cv::imshow("dst", dst);
+	//cv::imshow("crop", crop_th);
+	//cv::waitKey(0);
 }

@@ -4,6 +4,9 @@
 #include "hgMath.h"
 #include "PathPlanner.h"
 #include <fstream>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/opencv.hpp>
 void Engine::setCarnum(int car_num) {
 	this->car_num = car_num;
 }
@@ -45,16 +48,16 @@ void Engine::setWaypointRand(int waypoint_num) {
 	//this->wayPoints.push_back(Pos(0, 100));
 
 	// 별별
-	//this->wayPoints.push_back(Pos(10, 0));
-	//this->wayPoints.push_back(Pos(20, 20));
-	//this->wayPoints.push_back(Pos(30, 0));
-	//this->wayPoints.push_back(Pos(27, 20));
-	//this->wayPoints.push_back(Pos(40, 40));
-	//this->wayPoints.push_back(Pos(25, 40));
-	//this->wayPoints.push_back(Pos(20, 60));
-	//this->wayPoints.push_back(Pos(15, 40));
-	//this->wayPoints.push_back(Pos(0, 40));
-	//this->wayPoints.push_back(Pos(10, 0));
+	this->wayPoints.push_back(Pos(100, 0));
+	this->wayPoints.push_back(Pos(200, 200));
+	this->wayPoints.push_back(Pos(300, 0));
+	this->wayPoints.push_back(Pos(270, 200));
+	this->wayPoints.push_back(Pos(400, 400));
+	this->wayPoints.push_back(Pos(250, 400));
+	this->wayPoints.push_back(Pos(200, 600));
+	this->wayPoints.push_back(Pos(150, 400));
+	this->wayPoints.push_back(Pos(0, 400));
+	this->wayPoints.push_back(Pos(130, 200));
 
 	//NOP 
 	//this->wayPoints.push_back(Pos(280, 475));
@@ -62,29 +65,21 @@ void Engine::setWaypointRand(int waypoint_num) {
 	//this->wayPoints.push_back(Pos(280, 175));
 	//this->wayPoints.push_back(Pos(430, 325));
 
-	this->wayPoints.push_back(Pos(280, 475));
-	this->wayPoints.push_back(Pos(150, 400));
-	this->wayPoints.push_back(Pos(150, 250));
-	this->wayPoints.push_back(Pos(280, 175));
-	this->wayPoints.push_back(Pos(410, 250));
-	this->wayPoints.push_back(Pos(700, 400));
+	//this->wayPoints.push_back(Pos(280, 475));
+	//this->wayPoints.push_back(Pos(150, 400));
+	//this->wayPoints.push_back(Pos(150, 250));
+	//this->wayPoints.push_back(Pos(280, 175));
+	//this->wayPoints.push_back(Pos(410, 250));
+	//this->wayPoints.push_back(Pos(700, 400));
 }
 std::vector<std::vector<Pos>> Engine::getPath2() {
 
-	//std::vector<int> hi = hgMath::makeConvex(this->wayPoints);
-	//std::cout << "RRR" << std::endl;
-	//
-	//std::vector<std::vector<Pos>> rere;
-	//return rere;
 	Pos center = hgMath::getCenterPoint(this->wayPoints);
 
 	std::cout << "Center = " << center.x << " " << center.y << std::endl;
 
-	PathPlanner::printPathpoints(this->wayPoints);
-
-	//hgMath::QuickSort(this->wayPoints, 1, this->wayPoints.size() - 1, this->wayPoints[0]);
-	std::cout << "HERE!!" << std::endl;
-	PathPlanner::printPathpoints(this->wayPoints);
+	//PathPlanner::printPathpoints(this->wayPoints);
+	//PathPlanner::printPathpoints(this->wayPoints);
 
 	std::vector<Pos> inter_points = PathPlanner::getInnerPoint_polygon(wayPoints);
 	std::cout << inter_points[0].x << " " << inter_points[0].y << std::endl;
@@ -110,15 +105,17 @@ std::vector<std::vector<Pos>> Engine::getPath2() {
 		//std::cout << "      KMeans Result " << std::endl << std::endl;
 		std::vector<std::vector<Pos>> bf_convex_route;
 		bf_convex_route = PathPlanner::divide_waypoints(wayPoints);
-
+		
 		//PathPlanner::printWaypoints(bf_convex_route);
 		//cv::Mat My_Mat1(500, 500, CV_8SC1, cv::Scalar::all(0));
-
+		//PathPlanner::draw_Contours();
 		int temp[500][500];
 		int temp_idx = 0;
 		for (std::vector<std::vector<Pos>>::iterator it = bf_convex_route.begin(); it < bf_convex_route.end(); it++) {
 			//hgMath::QuickSort(*it, 1, it->size()-1, (*it)[0]);
-			std::vector<Pos> convex_route = hgMath::makeConvex(*it);
+			cout << "SIZE ======= "<<(*it).size() << endl;
+			//std::vector<Pos> convex_route = hgMath::makeConvex(*it);
+			std::vector<Pos> convex_route = PathPlanner::save_clustering_img(*it);
 			route.push_back(convex_route);
 
 			//for (std::vector<Pos>::iterator itt = it->begin(); itt < it->end(); itt++) {
@@ -126,25 +123,13 @@ std::vector<std::vector<Pos>> Engine::getPath2() {
 			//}
 			//temp_idx++;
 		}
-		//std::cout << My_Mat1 << std::endl;
 
-		//cv::Mat drawing = cv::Mat::zeros(500,500, CV_8UC1);
-		// 소스 이미지로 부터 윤곽선을 찾고, contour 벡터 안에 Point정보를 저장한다.
-		//for (int i = 0; i < contours.size(); i++)
-		//{
-		//	std::cout << contours[i] << std::endl;
-		//	//cv::Scalar color = cv::Scalar(rng.uniform(0, 256), rng.uniform(0, 256), rng.uniform(0, 256));
-		//	//drawContours(drawing, contours, (int)i, color, 2, cv::LINE_8, hierarchy, 0);
-		//}
 		std::cout << "CARACACAR   " << this->car_num << std::endl;
 		std::cout << "SIXZER   " << route.size() << std::endl;
 		std::cout << "SIXZER   " << route.size() << std::endl;
 		std::cout << "SIXZER   " << bf_convex_route.size() << std::endl;
 		std::cout << "SIXZER   " << bf_convex_route.size() << std::endl;
-		//std::vector<int> hi = hgMath::makeConvex(route[0]);
 
-		//std::cout << "COUNT!! " << _countof(hi) << std::endl;
-		//for (int i =0; i<)
 	}
 	// 일반적인 경우
 	else {
@@ -153,7 +138,11 @@ std::vector<std::vector<Pos>> Engine::getPath2() {
 		double area_th = 0.2;
 		route = PathPlanner::divide_intergral_center(this->wayPoints, area_per_unit, this->car_num);
 	}
-	PathPlanner::printWaypoints(route);
+	for (std::vector<std::vector<Pos>>::iterator it = route.begin(); it < route.end(); it++) {
+		it->push_back(it->at(0));
+	}
+
+	//PathPlanner::printWaypoints(route);
 	return route;
 }
 
