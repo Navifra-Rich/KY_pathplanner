@@ -4,6 +4,7 @@
 #include "hgMath.h"
 #include "PathPlanner.h"
 #include <fstream>
+#include <time.h>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/opencv.hpp>
@@ -17,17 +18,18 @@ void Engine::setWaypointRand(int waypoint_num) {
 	//	5개 : (280, 475)  (137.342, 371.353)  (191.832, 203.647)  (368.168, 203.647)  (422.658, 371.353)
 	//	6개 : (280, 475)  (150.096, 400)  (150.096, 250)  (280, 175)  (409.904, 250)  (409.904, 400)
 	// 오~각형
-	//this->wayPoints.push_back(Pos(20,0));
-	//this->wayPoints.push_back(Pos(40,0));
-	//this->wayPoints.push_back(Pos(50,20 ));
-	//this->wayPoints.push_back(Pos(30,40 ));
-	//this->wayPoints.push_back(Pos(10,20));
+	//this->wayPoints.push_back(Pos(200,0));
+	//this->wayPoints.push_back(Pos(400,0));
+	//this->wayPoints.push_back(Pos(500,200 ));
+	//this->wayPoints.push_back(Pos(300,400 ));
+	//this->wayPoints.push_back(Pos(100,200));
 
 	// 사~각형
-	//this->wayPoints.push_back(Pos(-40, 0));
-	//this->wayPoints.push_back(Pos(40, 0));
-	//this->wayPoints.push_back(Pos(70, 80));
-	//this->wayPoints.push_back(Pos(-10, 80));
+	//this->wayPoints.push_back(Pos(120, 50));
+	//this->wayPoints.push_back(Pos(280, 50));
+	//this->wayPoints.push_back(Pos(340, 210));
+	//this->wayPoints.push_back(Pos(280, 190));
+	//this->wayPoints.push_back(Pos(180, 210));
 	// 
 	// 마룸몽
 	//this->wayPoints.push_back(Pos(280, 503));
@@ -42,10 +44,10 @@ void Engine::setWaypointRand(int waypoint_num) {
 	//this->wayPoints.push_back(Pos(0, 20));
 
 	// 길쭊사각형
-	//this->wayPoints.push_back(Pos(0, 0));
-	//this->wayPoints.push_back(Pos(10, 0));
-	//this->wayPoints.push_back(Pos(10, 100));
-	//this->wayPoints.push_back(Pos(0, 100));
+	//this->wayPoints.push_back(Pos(10, 10));
+	//this->wayPoints.push_back(Pos(110, 10));
+	//this->wayPoints.push_back(Pos(110, 600));
+	//this->wayPoints.push_back(Pos(10, 600));
 
 	// 별별
 	this->wayPoints.push_back(Pos(100, 0));
@@ -58,6 +60,8 @@ void Engine::setWaypointRand(int waypoint_num) {
 	this->wayPoints.push_back(Pos(150, 400));
 	this->wayPoints.push_back(Pos(0, 400));
 	this->wayPoints.push_back(Pos(130, 200));
+
+
 
 	//NOP 
 	//this->wayPoints.push_back(Pos(280, 475));
@@ -95,16 +99,24 @@ std::vector<std::vector<Pos>> Engine::getPath2() {
 	std::cout << "RATIO " << ratio << std::endl;
 
 	std::vector<std::vector<Pos>> route;
+	std::vector<std::vector<Pos>> route_integral;
 	//return route;
 	// 공분산 큰 경우
-	if (ratio > 0) {
+	if (true) {
+		std::cout << "Kmeans mode" << std::endl;
+	// if (ratio > 0) {
 		//KMean_clustering km(this->car_num, wayPoints.size());
 		//this->wayPoints = km.clustering(wayPoints);
+		clock_t start, end;
+		start = clock(); 
 		KMean_clustering km(this->car_num, inter_points.size());
-		this->wayPoints = km.clustering(inter_points);
+		//this->wayPoints = km.clustering(inter_points);
+		end = clock();
+		cout << "TIME!!!!!!!!! = " << (double)(end - start) << endl;
+		//return route;
 		//std::cout << "      KMeans Result " << std::endl << std::endl;
 		std::vector<std::vector<Pos>> bf_convex_route;
-		bf_convex_route = PathPlanner::divide_waypoints(wayPoints);
+		bf_convex_route = PathPlanner::divide_waypoints(km.clustering(inter_points));
 		
 		//PathPlanner::printWaypoints(bf_convex_route);
 		//cv::Mat My_Mat1(500, 500, CV_8SC1, cv::Scalar::all(0));
@@ -131,19 +143,48 @@ std::vector<std::vector<Pos>> Engine::getPath2() {
 		std::cout << "SIXZER   " << bf_convex_route.size() << std::endl;
 
 	}
+	//return route;
 	// 일반적인 경우
-	else {
+	// else {
+	if(true){
+		std::cout << "Integral" << std::endl;
+		clock_t start, end;
+		start = clock();
 		double area = hgMath::integral_sum(this->wayPoints);
+		std::cout << "Area " << area << "Car num"<<this->car_num<<std::endl;
 		double area_per_unit = area / this->car_num;
 		double area_th = 0.2;
-		route = PathPlanner::divide_intergral_center(this->wayPoints, area_per_unit, this->car_num);
-	}
-	for (std::vector<std::vector<Pos>>::iterator it = route.begin(); it < route.end(); it++) {
-		it->push_back(it->at(0));
-	}
+		route_integral = PathPlanner::divide_intergral_center(this->wayPoints, area_per_unit, this->car_num);
+		end = clock();
+		cout << "TIME!!!!!!!!! = " << (double)(end - start) << endl;
 
-	//PathPlanner::printWaypoints(route);
-	return route;
+	}
+	//for (std::vector<std::vector<Pos>>::iterator it = route_integral.begin(); it < route.end(); it++) {
+	//	it->push_back(it->at(0));
+	//}
+	cout << "Len = " << route.size()<< endl;
+	cout << "Len = " << route_integral.size()<< endl;
+
+	 //PathPlanner::printWaypoints(route_integral);
+	route = PathPlanner::samplingAllRoute(route);
+	route_integral = PathPlanner::samplingAllRoute(route_integral);
+
+	std::vector<std::vector<float>> cur1 = PathPlanner::getCurvatureFromRoute(route);
+	cout << "-----------------" << endl;
+	std::vector<std::vector<float>> cur2 = PathPlanner::getCurvatureFromRoute(route_integral);
+	PathPlanner::printWaypoints(route, cur1);
+
+	float max_cur1, max_cur2;
+	max_cur1 = max_cur2 = 0;
+	for (int i = 0; i < cur1.size(); i++) {
+		for (int j = 0; j < cur1[i].size(); j++) if (cur1[i][j] > max_cur1) max_cur1 = cur1[i][j];
+		for (int j = 0; j < cur2[i].size(); j++) if (cur2[i][j] > max_cur2) max_cur2 = cur2[i][j];
+	}
+	std::cout << "CUR1 " << max_cur1 << " CUR2  " << max_cur2 << std::endl;
+	for (int i = 0; i < route.size(); i++) {
+	std::cout << "CS " << cur1[i].size() << " RS  " << route[i].size() << std::endl;
+	}
+	return route_integral;
 }
 
 // Unused
@@ -264,23 +305,23 @@ std::vector<std::vector<VEdge>> Engine::waypoints2vector(std::vector<Pos> way) {
 	return edges_vector;
 }
 //Temp
-void Engine::printWaypoints(string fileName) {
-	for (int i = 0; i < wayPoints.size(); i++) {
-		std::cout << "COORD = (" << wayPoints[i].x << " , " << wayPoints[i].y << ")  GROUP = " << wayPoints[i].group << std::endl;
-	}
-	std::ofstream writeFile;            //쓸 목적의 파일 선언
-	writeFile.open("text\\words"+fileName+".txt");
-
-
-	for (int i = 0; i < wayPoints.size(); i++) {
-		string str = to_string(int(wayPoints[i].x))+"\n";
-		writeFile.write(str.c_str(), str.size());
-		str = to_string(int(wayPoints[i].y)) + "\n";
-		writeFile.write(str.c_str(), str.size());
-		str = to_string(int(wayPoints[i].group)) + "\n";
-		writeFile.write(str.c_str(), str.size());
-	}
-}
+//void Engine::printWaypoints(string fileName) {
+//	for (int i = 0; i < wayPoints.size(); i++) {
+//		std::cout << "COORD = (" << wayPoints[i].x << " , " << wayPoints[i].y << ")  GROUP = " << wayPoints[i].group << std::endl;
+//	}
+//	std::ofstream writeFile;            //쓸 목적의 파일 선언
+//	writeFile.open("text\\words"+fileName+".txt");
+//
+//
+//	for (int i = 0; i < wayPoints.size(); i++) {
+//		string str = to_string(int(wayPoints[i].x))+"\n";
+//		writeFile.write(str.c_str(), str.size());
+//		str = to_string(int(wayPoints[i].y)) + "\n";
+//		writeFile.write(str.c_str(), str.size());
+//		str = to_string(int(wayPoints[i].group)) + "\n";
+//		writeFile.write(str.c_str(), str.size());
+//	}
+//}
 // Unused
 void Engine::getPath_voronoi() {
 	KMean_clustering km(this->car_num, this->wayPoints.size());
