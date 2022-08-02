@@ -262,9 +262,10 @@ std::vector<Pos> PathPlanner::samplingRoute(std::vector<Pos> points, float th) {
 	return re_vector;
 }
 std::vector<Pos> PathPlanner::save_clustering_img(std::vector<Pos> points) {
-	cv::Mat img, img_th, img_blur;
+	cv::Mat img_th, img_blur;
+	cv::Mat img(1000, 1000, CV_8U, cv::Scalar(255));
 	std::vector<std::vector<cv::Point>> contours;
-	img.create(1000, 1000, CV_8U);
+	//img.create(1000, 1000, CV_8U, cv::Scalar(255));
 	for (std::vector<Pos>::iterator it = points.begin(); it < points.end(); it++) {
 			img.at<uchar>(it->x, it->y) = 0;
 	}
