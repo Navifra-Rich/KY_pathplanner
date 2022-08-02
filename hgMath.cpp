@@ -86,40 +86,40 @@ void hgMath::QuickSort(std::vector<Pos>& a, int lo, int hi, Pos init) {
 		return;
 	}
 
-	// ÇöÀç ¹è¿­ ¹üÀ§ÀÇ Áß¾Ó°ªÀ» ÇÇ¹þÀ¸·Î ¼±ÅÃÇÑ´Ù.
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½è¿­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß¾Ó°ï¿½ï¿½ï¿½ ï¿½Ç¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 	// Select the median as pivot in the current array range.
 	Pos pivot = a[lo + (hi - lo + 1) / 2];
 	int i = lo, j = hi;
 
-	// Á¤º¹ °úÁ¤
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	// Conquer process
 	while (i <= j) {
-		// ÇÇ¹þÀÇ ¿ÞÂÊ¿¡´Â comparator(Å¸°Ù, "ÇÇ¹þ")À» ¸¸Á·ÇÏÁö ¾Ê´Â ÀÎµ¦½º¸¦ ¼±ÅÃ (i)
+		// ï¿½Ç¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ê¿ï¿½ï¿½ï¿½ comparator(Å¸ï¿½ï¿½, "ï¿½Ç¹ï¿½")ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (i)
 		// On the left side of the pivot, select an index that doesn't satisfy the comparator(target, "pivot"). (i)
 		while (comparator(&a[i], &pivot, init)) i++;
 
-		// ÇÇ¹þÀÇ ¿À¸¥ÂÊ¿¡´Â comparator("ÇÇ¹þ", Å¸°Ù)À» ¸¸Á·ÇÏÁö ¾Ê´Â ÀÎµ¦½º¸¦ ¼±ÅÃ (j)
+		// ï¿½Ç¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ê¿ï¿½ï¿½ï¿½ comparator("ï¿½Ç¹ï¿½", Å¸ï¿½ï¿½)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (j)
 		// On the right side of the pivot, select an index that doesn't satisfy the comparator("pivot", target). (j)
 		while (comparator(&pivot, &a[j], init)) j--;
-		// (i > j) ÇÇ¹þÀÇ ¿ÞÂÊ¿¡´Â ¸ðµç °ªÀÌ ÇÇ¹þº¸´Ù ÀÛ°í ÇÇ¹þÀÇ ¿À¸¥ÂÊ¿¡´Â ¸ðµç °ªÀÌ ÇÇ¹þº¸´Ù Å« »óÅÂ°¡ µÇ¾úÀ½.
+		// (i > j) ï¿½Ç¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Û°ï¿½ ï¿½Ç¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¹ï¿½ï¿½ï¿½ï¿½ï¿½ Å« ï¿½ï¿½ï¿½Â°ï¿½ ï¿½Ç¾ï¿½ï¿½ï¿½.
 		// (i > j) On the left side of the pivot, all values are smaller than the pivot, and on the right side of the pivot, all values are larger than the pivot.
 		if (i > j) {
 			break;
 		}
 
-		// i¹øÂ° °ªÀº ÇÇ¹þ º¸´Ù Å©°í j¹øÂ° °ªÀº ÇÇ¹þº¸´Ù ÀÛÀ¸¹Ç·Î µÎ °ªÀ» ½º¿ÒÇÑ´Ù.
+		// iï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¹ï¿½ ï¿½ï¿½ï¿½ï¿½ Å©ï¿½ï¿½ jï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 		// The i-th value is larger than the pivot and the j-th value is smaller than the pivot, so swap the two values.
 		Pos temp = a[i];
 		a[i] = a[j];
 		a[j] = temp;
 
-		// ÀÎµ¦½º i¸¦ 1Áõ°¡ ½ÃÅ°°í ÀÎµ¦½º j¸¦ 1 °¨¼Ò ½ÃÄÑ¼­ Å½»ö ¹üÀ§¸¦ ¾ÈÂÊÀ¸·Î Á¼Èù´Ù.
+		// ï¿½Îµï¿½ï¿½ï¿½ iï¿½ï¿½ 1ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å°ï¿½ï¿½ ï¿½Îµï¿½ï¿½ï¿½ jï¿½ï¿½ 1 ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ñ¼ï¿½ Å½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½.
 		// Narrow the search inward by increasing index i by one and decreasing index j by one.
 		i++;
 		j--;
 	}
 
-	// ºÐÇÒ °úÁ¤
+	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	// Divide process
 	QuickSort(a, lo, j, init);
 	QuickSort(a, i, hi, init);
@@ -191,15 +191,8 @@ bool hgMath::getIntersectPoint(const Pos& AP1, const Pos& AP2,
 	return true;
 }
 std::vector<Pos> hgMath::PCA(std::vector<Pos> points) {
-	//points.clear();
-	//points.push_back(Pos(170, 70));
-	//points.push_back(Pos(150, 45));
-	//points.push_back(Pos(160, 55));
-	//points.push_back(Pos(180, 60));
-	//points.push_back(Pos(172, 80));
 
 	int n = points.size();
-
 	std::vector<Pos> pca;
 	double a, b, c, d, x_sum, y_sum;
 	a = b = c = d = x_sum = y_sum = 0;
@@ -267,125 +260,12 @@ std::vector<Pos> hgMath::makeConvex(std::vector<Pos> p) {
 			}
 		}
 		stack[++idx] = next++;
-		// std::cout<<"idx = "<<idx<<" next "<<next-1<<std::endl;
-
 	}
 	std::vector<Pos> stack2;
 	for (int i = 0; i < idx; i++) {
-		//std::cout << "IDX " << stack[i] << std::endl;
-		//std::cout << "		 " << poses[stack[i]].x<<" "<< poses[stack[i]].y << std::endl;
 		stack2.push_back(p[stack[i]]);
 	}
 	return stack2;
-
 	//convec_publish(p, stack, idx);
 
-
-	//int stack[1000];
-	//std::vector<Pos> stack2;
-	//Pos minPose(99999,99999);
-	//for (std::vector<Pos>::iterator it = poses.begin(); it < poses.end(); it++) {
-	//	if (it->y < minPose.y or (it->y == minPose.y and it->x < minPose.x)) {
-	//		minPose.y = it->y;
-	//		minPose.x = it->x;
-	//	}
-	//}
-	//std::cout << "POses " << poses[0].x << " " << poses[0].y << std::endl;
-	//poses[0] = minPose;
-	//std::cout << "POses " << poses[0].x << " " << poses[0].y << std::endl;
-	//hgMath::QuickSort(poses, 1, poses.size()-1, poses[0]);
-	//int idx = -1;
-	//stack[++idx] = 0;
-	//stack[++idx] = 1;
-	//
-	//int next = 2;
-	//while (next < poses.size())
-	//{
-	//	while ((idx + 1) >= 2)
-	//	{
-	//		int second = stack[idx--];
-	//		int first = stack[idx];
-	//		//std::cout << "FIRST " << poses[first].x << " " << poses[first].y << std::endl;
-	//		//std::cout << "Secon " << poses[second].x << " " << poses[second].y << std::endl;
-	//		//std::cout << "Next  " << poses[next].x << " " << poses[next].y << std::endl;
-	//		if (hgMath::ccw(&poses[first], &poses[second], &poses[next])>0)
-	//		{
-	//			stack[++idx] = second;
-	//			break;
-	//		}
-	//	}
-	//	stack[++idx] = next++;
-	//}
-	//for (int i = 0; i < idx; i++) {
-	//	//std::cout << "IDX " << stack[i] << std::endl;
-	//	//std::cout << "		 " << poses[stack[i]].x<<" "<< poses[stack[i]].y << std::endl;
-	//	stack2.push_back(poses[stack[i]]);
-	//}
-	//return stack2;
-	////return idx + 1;
 }
-
-//vector<int> hgMath::makeConvex(const vector<Pos> poses){
-//
-//	int stack[100];
-//	int idx = -1;
-//	stack[++idx] = 0;
-//	stack[++idx] = 1;
-//
-//	int next = 2;
-//	while (next < poses.size())
-//	{
-//
-//		while ((idx + 1) >= 2)
-//		{
-//			int second = stack[idx--];
-//			int first = stack[idx];
-//
-//			if (hgMath::ccw(&poses[first], &poses[second], &poses[next]))
-//			{
-//				stack[++idx] = second;
-//				break;
-//			}
-//		}
-//		stack[++idx] = next++;
-//		// std::cout<<"idx = "<<idx<<" next "<<next-1<<std::endl;
-//
-//	}
-//	for (int i = 0; i < idx; i++) {
-//		std::cout << "IDX " << stack[i] << std::endl;
-//	}
-//	vector<int> stack2;
-//	return stack2;
-//
-//
-//
-//	//int idx = 1;
-//	//vector<int> stack;
-//	//stack.push_back(0);
-//	//stack.push_back(1);
-//	////stack[++idx] = 1;
-//	//
-//	//int next = 2;
-//	//while (next < poses.size())
-//	//{
-//	//
-//	//	while ((idx + 1) >= 2)
-//	//	{
-//	//		int second = stack[idx--];
-//	//		int first = stack[idx];
-//	//
-//	//		if (hgMath::ccw(&poses[first], &poses[second], &poses[next]) > 0)
-//	//		//if (leftTurn(p[first], p[second], p[next]))
-//	//		{
-//	//			stack.push_back(second);
-//	//			idx++;
-//	//			break;
-//	//		}
-//	//	}
-//	//	idx++;
-//	//	stack.push_back(next);
-//	//	next++;
-//	//	// std::cout<<"idx = "<<idx<<" next "<<next-1<<std::endl;
-//	//}
-//	//return stack;
-//}
