@@ -2,36 +2,7 @@
 #include<iostream>
 #include "opencv2/opencv.hpp"
 #include "opencv2/imgproc.hpp"
-long long hgMath::dist(const Pos* p1, const Pos* p2) {
-	return (long long)(p1->x - p2->x) * (p1->x - p2->x) + (long long)(p1->y - p2->y) * (p1->y - p2->y);
-}
-int hgMath::ccw(const Pos* p1, const Pos* p2, const Pos* p3) {
 
-	int cross_product = (p2->x - p1->x) * (p3->y - p1->y) - (p3->x - p1->x) * (p2->y - p1->y);
-	if (cross_product > 0) {
-		return 1;
-	}
-	else if (cross_product < 0) {
-		return -1;
-	}
-	else {
-		return 0;
-	}
-}
-int hgMath::comparator(const Pos* left, const Pos* right, const Pos p) {
-	int ret;
-	int direction = ccw(&p, left, right);
-	if (direction == 0) {
-		ret = (dist(&p, left) < dist(&p, right));
-	}
-	else if (direction == 1) {
-		ret = 1;
-	}
-	else {
-		ret = 0;
-	}
-	return ret;
-}
 double ccw(Pos& A, Pos& B, Pos& C) {
 	Pos BO = B - A;
 	Pos CO = C - A;
@@ -52,77 +23,6 @@ bool comp(Pos& A, Pos& B, Pos* p)
 	if (A.y != B.y)
 		return A.y < B.y;
 	return A.x < B.x;
-}
-void quickSortByAngle(int first, int last, Pos* p)
-{
-	if (first >= last) return;
-
-	int pivot = first;
-	int i = first + 1;
-	int j = last;
-
-	while (i <= j)
-	{
-		while (comp(p[i], p[pivot], p) && i <= last) i++;
-		while (!comp(p[j], p[pivot], p) && j > first) j--;
-
-		if (i >= j) break;
-
-		Pos tmp = p[i];
-		p[i] = p[j];
-		p[j] = tmp;
-	}
-
-	Pos tmp = p[j];
-	p[j] = p[pivot];
-	p[pivot] = tmp;
-
-	quickSortByAngle(first, j - 1, p);
-	quickSortByAngle(j + 1, last, p);
-}
-
-void hgMath::QuickSort(std::vector<Pos>& a, int lo, int hi, Pos init) {
-	if (hi - lo <= 0) {
-		return;
-	}
-
-	// ���� �迭 ������ �߾Ӱ��� �ǹ����� �����Ѵ�.
-	// Select the median as pivot in the current array range.
-	Pos pivot = a[lo + (hi - lo + 1) / 2];
-	int i = lo, j = hi;
-
-	// ���� ����
-	// Conquer process
-	while (i <= j) {
-		// �ǹ��� ���ʿ��� comparator(Ÿ��, "�ǹ�")�� �������� �ʴ� �ε����� ���� (i)
-		// On the left side of the pivot, select an index that doesn't satisfy the comparator(target, "pivot"). (i)
-		while (comparator(&a[i], &pivot, init)) i++;
-
-		// �ǹ��� �����ʿ��� comparator("�ǹ�", Ÿ��)�� �������� �ʴ� �ε����� ���� (j)
-		// On the right side of the pivot, select an index that doesn't satisfy the comparator("pivot", target). (j)
-		while (comparator(&pivot, &a[j], init)) j--;
-		// (i > j) �ǹ��� ���ʿ��� ��� ���� �ǹ����� �۰� �ǹ��� �����ʿ��� ��� ���� �ǹ����� ū ���°� �Ǿ���.
-		// (i > j) On the left side of the pivot, all values are smaller than the pivot, and on the right side of the pivot, all values are larger than the pivot.
-		if (i > j) {
-			break;
-		}
-
-		// i��° ���� �ǹ� ���� ũ�� j��° ���� �ǹ����� �����Ƿ� �� ���� �����Ѵ�.
-		// The i-th value is larger than the pivot and the j-th value is smaller than the pivot, so swap the two values.
-		Pos temp = a[i];
-		a[i] = a[j];
-		a[j] = temp;
-
-		// �ε��� i�� 1���� ��Ű�� �ε��� j�� 1 ���� ���Ѽ� Ž�� ������ �������� ������.
-		// Narrow the search inward by increasing index i by one and decreasing index j by one.
-		i++;
-		j--;
-	}
-
-	// ���� ����
-	// Divide process
-	QuickSort(a, lo, j, init);
-	QuickSort(a, i, hi, init);
 }
 double hgMath::getDist(Pos A) {
 	return sqrt(A.x * A.x + A.y * A.y);
@@ -218,54 +118,3 @@ std::vector<Pos> hgMath::PCA(std::vector<Pos> points) {
 	return pca;
 }
 
-
-std::vector<Pos> hgMath::makeConvex(std::vector<Pos> p) {
-	int size = p.size();
-	std::cout << "INXONVEX" << std::endl;
-	int stack[99999];
-	double minX = 1000000000, minY = 1000000000;
-	int minIdx = 0;
-	for (int i = 0; i < size; i++) {
-
-		if (minY > p[i].y || (minY == p[i].y && minX > p[i].x))
-		{
-			minX = p[i].x;
-			minY = p[i].y;
-			minIdx = i;
-		}
-	}
-	p[minIdx].x = p[0].x;
-	p[minIdx].y = p[0].y;
-	p[0].x = minX;
-	p[0].y = minY;
-
-	quickSortByAngle(1, size - 1, &p[0]);
-	int idx = -1;
-	stack[++idx] = 0;
-	stack[++idx] = 1;
-
-	int next = 2;
-	while (next < size)
-	{
-
-		while ((idx + 1) >= 2)
-		{
-			int second = stack[idx--];
-			int first = stack[idx];
-
-			if (leftTurn(p[first], p[second], p[next]))
-			{
-				stack[++idx] = second;
-				break;
-			}
-		}
-		stack[++idx] = next++;
-	}
-	std::vector<Pos> stack2;
-	for (int i = 0; i < idx; i++) {
-		stack2.push_back(p[stack[i]]);
-	}
-	return stack2;
-	//convec_publish(p, stack, idx);
-
-}

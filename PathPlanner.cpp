@@ -6,7 +6,7 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/opencv.hpp>
-// std::vector<Pos> -> vector<vector<Pos> ºÐ¸® (±×·ìº°·Î)
+// std::vector<Pos> -> vector<vector<Pos> ï¿½Ð¸ï¿½ (ï¿½×·ìº°ï¿½ï¿½)
 std::vector<std::vector<Pos>> PathPlanner::divide_waypoints(const std::vector<Pos> wayPoints) {
 	int max_group = 0;
 	std::vector<std::vector<Pos>> temp(100);
@@ -20,7 +20,7 @@ std::vector<std::vector<Pos>> PathPlanner::divide_waypoints(const std::vector<Po
 	return devided_wayPoints;
 
 }
-// Æú¸®°ï ³»ºÎ¿¡ À¯´ÏÆû »ùÇÃ¸µ
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã¸ï¿½
 std::vector<Pos> PathPlanner::getInnerPoint_polygon(std::vector<Pos> wayPoints, int width, int height) {
 	std::vector<Pos> interPoints;
 	int delta = 1;
@@ -51,15 +51,15 @@ std::vector<Pos> PathPlanner::getInnerPoint_polygon(std::vector<Pos> wayPoints, 
 	std::cout << "Inter Point " << interPoints.size() << std::endl;
 	return interPoints;
 }
-// ÀûºÐ ±â¹Ý ¿þÀÌÆ÷ÀÎÆ® ¹ÝÈ¯
+// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½È¯
 std::vector<std::vector<Pos>> PathPlanner::divide_intergral_center(std::vector<Pos> wayPoints, double area_per_unit, int car_num) {
 	std::vector<std::vector<Pos>> route;
 	std::vector<Pos> mission_vec;
 	Pos center = hgMath::getCenterPoint(wayPoints);
 	wayPoints.push_back(wayPoints[0]);
-	double cur_area = 0;		// ÇöÀç ³ÐÀÌ
-	double cur_area_idx = 0;	// ÇöÀç Â÷·® ¹øÈ£
-	double cur_vec_idx = 0;	// ÇöÀç ¼±ºÐ ¹øÈ£
+	double cur_area = 0;		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	double cur_area_idx = 0;	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£
+	double cur_vec_idx = 0;	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È£
 	mission_vec.push_back(center);
 	mission_vec.push_back(wayPoints[0]);
 	for (std::vector<Pos>::iterator i = wayPoints.begin(); i < wayPoints.end() - 1; i++) {
@@ -67,7 +67,7 @@ std::vector<std::vector<Pos>> PathPlanner::divide_intergral_center(std::vector<P
 		Pos vec = *(i + 1) - *i;
 		double dist = hgMath::getDist(vec);
 
-		// 10°³·Î ¼±ºÐ ³ª´²¼­ ³ÐÀÌ °è»ê
+		// 10ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 		for (int sub_vec_idx = 0; sub_vec_idx < 1000; sub_vec_idx++) {
 			Pos A, B;
 			A = pivot + vec.mul(sub_vec_idx * 0.001);
@@ -106,7 +106,7 @@ void PathPlanner::printWaypoints(std::vector<std::vector<Pos>> wayPoints, std::v
 	int index = 0;
 	for (std::vector<std::vector<Pos>> ::iterator i = wayPoints.begin(); i < wayPoints.end(); i++) {
 		//std::cout << "ROUTE " << std::endl;
-		std::ofstream writeFile;            //¾µ ¸ñÀûÀÇ ÆÄÀÏ ¼±¾ð
+		std::ofstream writeFile;            //ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		string fileName = to_string(index);
 		writeFile.open("text\\words" + fileName + ".txt");
 		int index2 = 0;
@@ -117,8 +117,8 @@ void PathPlanner::printWaypoints(std::vector<std::vector<Pos>> wayPoints, std::v
 			writeFile.write(str.c_str(), str.size());
 			str = to_string(int((*j).y)) + "\n";
 			writeFile.write(str.c_str(), str.size());
-			str = to_string(float(curvat[index][index2])) + "\n";
-			writeFile.write(str.c_str(), str.size());
+			//str = to_string(float(curvat[index][index2])) + "\n";
+			//writeFile.write(str.c_str(), str.size());
 			index2++;
 		}
 		index++;
@@ -220,7 +220,7 @@ std::vector<std::vector<Pos>> PathPlanner::samplingAllRoute(std::vector<std::vec
 	std::vector<std::vector<Pos>> re_route;
 	for (int i = 0; i < route.size(); i++) {
 		std::cout << "Pre  len " << route[i].size() << std::endl;
-		re_route.push_back(samplingRoute(route[i],20));
+		re_route.push_back(samplingRoute(route[i],2));
 		std::cout << "Post len " << re_route[i].size() << std::endl;
 		
 	}
@@ -237,6 +237,8 @@ std::vector<Pos> PathPlanner::samplingRoute(std::vector<Pos> points, float th) {
 
 		if (dist > th) {
 			idx++;
+			//cout << "PUSH revector" << it->x<<" "<<it->y << endl;
+
 			re_vector.push_back(Pos(it->x, it->y));
 			continue;
 		}
@@ -292,6 +294,92 @@ std::vector<Pos> PathPlanner::save_clustering_img(std::vector<Pos> points) {
 		re_vector.push_back(pos);
 	}
 	return re_vector;
+}
+std::vector<std::vector<Pos>> PathPlanner::getCarposeWithTimestamp(std::vector<std::vector<Pos>> route, float speed) {
+
+	int car_num = route.size();
+	std::vector<Pos> curCarPose;
+	std::vector<bool> collision;
+	std::vector<std::vector<Pos>> routeWithTime(car_num);
+	std::vector<bool> routeFinished(car_num, false);
+	std::vector<int> nextIndex;
+	// car pose init
+	for (int i = 0; i < car_num; i++) {
+		routeWithTime[i].push_back(route[i][0]);
+		curCarPose.push_back(route[i][0]);
+		nextIndex.push_back(1);
+	}
+
+	while (true) {
+		// car collision check
+		collision = checkCarDist(curCarPose);
+		for (int i = 0; i < car_num; i++) {
+			if (!collision[i] or routeFinished[i]) {
+				routeWithTime[i].push_back(curCarPose[i]);
+				continue;
+			}
+			//if (i != 2)continue;
+			float dist = speed;
+
+			routeFinished[i] = moveCar(route[i], curCarPose[i], nextIndex[i], dist);
+			routeWithTime[i].push_back(curCarPose[i]);
+			//cout << "CAR NUM " << i << " Pos " << curCarPose[i].x << " " << curCarPose[i].y<< endl;
+		}
+		
+		bool finished_flag = true;
+		for (int i = 0; i < car_num; i++) if (!routeFinished[i]) finished_flag = false;
+		if (finished_flag) return routeWithTime;
+	}
+	//cout << "FINISHIED" << endl;
+	return routeWithTime;
+}
+std::vector<bool> PathPlanner::checkCarDist(std::vector<Pos> carPose, float th){
+	std::vector<bool> re_bool(carPose.size());
+	for (int i = 0; i < carPose.size()-1; i++) {
+		for (int j = i; j < carPose.size(); j++) {
+			float dist = (carPose[i].x - carPose[j].x) * (carPose[i].x - carPose[j].x) + (carPose[i].y - carPose[j].y)*(carPose[i].y - carPose[j].y);
+			if (dist < th)
+				re_bool[i] = false;
+			else
+				re_bool[i] = true;
+		}
+	}
+	re_bool[carPose.size() - 1] = true;
+	return re_bool;
+}
+bool PathPlanner::moveCar(std::vector<Pos> route, Pos& curPose, int& nextIdx, float& dist){
+	float remain_dist = dist;
+	
+	Pos vec= route[nextIdx] - curPose;
+	float cur_path_dist = hgMath::getDist(vec);
+	//cout << "		ST = " << curPose.x << " " << curPose.y << "  END " << route[nextIdx].x << " " << route[nextIdx].y << endl;
+	//cout << "		vec = " << vec.x << " " << vec.y << endl;
+	//cout << "		DIST " << remain_dist<<"  "<<cur_path_dist << endl;
+
+
+	while (remain_dist > cur_path_dist) {
+		remain_dist -= cur_path_dist;
+		curPose = route[nextIdx];
+		nextIdx++;
+		if (nextIdx >= route.size()) { 
+			curPose = route[nextIdx - 1];
+			return true; 
+		}
+		vec = route[nextIdx] - curPose;
+		cur_path_dist = hgMath::getDist(vec);
+
+	}
+	//cout << "		DIST2 " << remain_dist << "  " << cur_path_dist << endl;
+
+	//if (remain_dist < cur_path_dist) {
+	double ratio = remain_dist / cur_path_dist;
+	Pos newCurPose(curPose.x + vec.x*ratio, curPose.y + vec.y * ratio);
+	//cout << "		RATIO	" << ratio<< endl;
+	//cout << "		New pose " << newCurPose.x<<"  "<<newCurPose.y<< endl;
+	//cout << "		Moved dist = " << hgMath::getDist(newCurPose - curPose)<<endl;
+	curPose = newCurPose;
+	//}
+	return false;
 }
 void PathPlanner::draw_Contours() {
 	//cout << "HELLOW " << endl;

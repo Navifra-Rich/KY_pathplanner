@@ -25,11 +25,11 @@ void Engine::setWaypointRand(int waypoint_num) {
 	//this->wayPoints.push_back(Pos(100,200));
 
 	// ��~����
-	//this->wayPoints.push_back(Pos(120, 50));
-	//this->wayPoints.push_back(Pos(280, 50));
-	//this->wayPoints.push_back(Pos(340, 210));
-	//this->wayPoints.push_back(Pos(280, 190));
-	//this->wayPoints.push_back(Pos(180, 210));
+	this->wayPoints.push_back(Pos(120, 50));
+	this->wayPoints.push_back(Pos(280, 50));
+	this->wayPoints.push_back(Pos(340, 210));
+	this->wayPoints.push_back(Pos(280, 190));
+	this->wayPoints.push_back(Pos(180, 210));
 	// 
 	// �����
 	//this->wayPoints.push_back(Pos(280, 503));
@@ -61,10 +61,10 @@ void Engine::setWaypointRand(int waypoint_num) {
 	//this->wayPoints.push_back(Pos(0, 400));
 	//this->wayPoints.push_back(Pos(130, 200));
 	//NOP 
-	this->wayPoints.push_back(Pos(280, 475));
-	this->wayPoints.push_back(Pos(130, 325));
-	this->wayPoints.push_back(Pos(280, 175));
-	this->wayPoints.push_back(Pos(430, 325));
+	//this->wayPoints.push_back(Pos(280, 475));
+	//this->wayPoints.push_back(Pos(130, 325));
+	//this->wayPoints.push_back(Pos(280, 175));
+	//this->wayPoints.push_back(Pos(430, 325));
 	//this->wayPoints.push_back(Pos(280, 475));
 	//this->wayPoints.push_back(Pos(150, 400));
 	//this->wayPoints.push_back(Pos(150, 250));
@@ -92,6 +92,7 @@ std::vector<std::vector<Pos>> Engine::getPath2() {
 
 	std::vector<std::vector<Pos>> route;
 	std::vector<std::vector<Pos>> route_integral;
+	threshold = 10;
 	if (ratio < threshold) {
 		std::cout << "Kmeans mode" << std::endl;
 		// clock_t start, end;
@@ -106,8 +107,6 @@ std::vector<std::vector<Pos>> Engine::getPath2() {
 			std::vector<Pos> convex_route = PathPlanner::save_clustering_img(*it);
 			route.push_back(convex_route);
 		}
-		//std::cout << "CAR NUM   		" << this->car_num << std::endl;
-		//std::cout << "Route length    " << route.size() << << "   " << bf_convex_route.size() << std::endl;
 	}
 	else{
 		std::cout << "Integral" << std::endl;
@@ -119,17 +118,19 @@ std::vector<std::vector<Pos>> Engine::getPath2() {
 		route_integral = PathPlanner::divide_intergral_center(this->wayPoints, area_per_unit, this->car_num);
 		end = clock();
 		cout << "TIME = " << (double)(end - start) << endl;
+		std::vector<std::vector<float>> cur1 = PathPlanner::getCurvatureFromRoute(route);
 
 	}
 	//cout << "Len = " << route.size()<< endl;
 	//cout << "Len = " << route_integral.size()<< endl;
-	if (ratio < threshold0) return route = PathPlanner::samplingAllRoute(route);
-	else return route_integral = PathPlanner::samplingAllRoute(route_integral);
-
-	//std::vector<std::vector<float>> cur1 = PathPlanner::getCurvatureFromRoute(route);
+	std::vector<std::vector<float>> cur1;
+	if (ratio < threshold) route = PathPlanner::samplingAllRoute(route);
+	else route = PathPlanner::samplingAllRoute(route_integral);
+	route = PathPlanner::getCarposeWithTimestamp(route, 5);
+	PathPlanner::printWaypoints(route, cur1);
+	return route;
 	//cout << "-----------------" << endl;
 	//std::vector<std::vector<float>> cur2 = PathPlanner::getCurvatureFromRoute(route_integral);
-	//PathPlanner::printWaypoints(route, cur1);
 	//
 	//float max_cur1, max_cur2;
 	//max_cur1 = max_cur2 = 0;
