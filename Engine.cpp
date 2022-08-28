@@ -63,14 +63,14 @@ void Engine::setWaypointRand(int waypoint_num) {
 	//this->wayPoints.push_back(Pos(10, 600));
 
 	// ����
-	this->wayPoints.push_back(Pos(100, 0));
-	this->wayPoints.push_back(Pos(200, 200));
-	this->wayPoints.push_back(Pos(300, 0));
-	this->wayPoints.push_back(Pos(270, 200));
-	this->wayPoints.push_back(Pos(400, 400));
-	this->wayPoints.push_back(Pos(250, 400));
-	this->wayPoints.push_back(Pos(200, 600));
-	this->wayPoints.push_back(Pos(150, 400));
+	this->wayPoints.push_back(Pos(100.7, 0));
+	this->wayPoints.push_back(Pos(200.7, 200));
+	this->wayPoints.push_back(Pos(300.7, 0));
+	this->wayPoints.push_back(Pos(270.7, 200));
+	this->wayPoints.push_back(Pos(400.7, 400));
+	this->wayPoints.push_back(Pos(250.7, 400));
+	this->wayPoints.push_back(Pos(200.7, 600));
+	this->wayPoints.push_back(Pos(150.7, 400));
 	this->wayPoints.push_back(Pos(0, 400));
 	this->wayPoints.push_back(Pos(130, 200));
 	//NOP 
@@ -87,6 +87,10 @@ void Engine::setWaypointRand(int waypoint_num) {
 }
 std::vector<std::vector<Pos>> Engine::getPath2() {
 	double threshold = 5.0;
+	//for (int i = 0; i < wayPoints.size(); i++) {
+	//	wayPoints[i].x *= 10;
+	//	wayPoints[i].y *= 10;
+	//}
 	Pos center = hgMath::getCenterPoint(this->wayPoints);
 
 	std::cout << "Center = " << center.x << " " << center.y << std::endl;
@@ -95,6 +99,7 @@ std::vector<std::vector<Pos>> Engine::getPath2() {
 	std::cout << inter_points[0].x << " " << inter_points[0].y << std::endl;
 	std::cout << inter_points[0].x << " " << inter_points[0].y << std::endl;
 	std::cout << "N = " << inter_points.size() << std::endl;
+
 
 	std::vector<Pos> pca = hgMath::PCA(inter_points);
 	if (pca[0].x == 0) pca[0].x += 0.000001;
@@ -141,13 +146,13 @@ std::vector<std::vector<Pos>> Engine::getPath2() {
 	else route = PathPlanner::samplingAllRoute(route_integral);
 
 	//route = PathPlanner::getCarposeWithTimestamp(route, 5);
+	PathPlanner::findNearestPoints(route, wayPoints);
 	PathPlanner::printWaypoints(route, cur1);
 	//for (std::vector<std::vector<Pos>> ::iterator i = route.begin(); i < route.end(); i++) {
 	//	for (std::vector<Pos> ::iterator j = i->begin(); j < i->end(); j++) {
 	//		cout << "Coord  " << j->x << " / " << j->y << endl;
 	//	}
 	//}
-
 	return route;
 
 }

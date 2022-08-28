@@ -295,7 +295,7 @@ std::vector<Pos> PathPlanner::save_clustering_img(std::vector<Pos> points) {
 	cv::cvtColor(img, img, cv::COLOR_GRAY2BGR);
 	cv::Scalar c(0, 0, 255);
 	for (int i = 0; i < contours.size(); i++) {
-		cout << "IDX " << i << " SIZE " << contours[0].size() << endl;
+		//cout << "IDX " << i << " SIZE " << contours[0].size() << endl;
 		drawContours(img, contours, i, c, 3);
 	}
 	cv::imshow("img", img);
@@ -396,6 +396,35 @@ bool PathPlanner::moveCar(std::vector<Pos> route, Pos& curPose, int& nextIdx, fl
 	//cout << "		New pose " << curPose.x << "  " << curPose.y << endl;
 	//}
 	return false;
+}
+void PathPlanner::findNearestPoints(std::vector<vector<Pos>>& route, std::vector<Pos> raw_input) {
+	float th = 5;
+	for (int i = 0; i < route.size(); i++) {
+		//cout << "SIZE " << route[i].size() << endl;
+		//cout << "R SIZE " << raw_input.size() << endl;
+		for (int ii = 0; ii < route[i].size(); ii++) {
+			float min_dist = 10000;
+			Pos near;
+			for (int j = 0; j < raw_input.size(); j++) {
+				Pos A = route[i][ii];
+				Pos B = raw_input[j];
+				Pos vec = A - B;
+				//cout << "A  " << A.x << " " << A.y << endl;
+				//cout << "B  " << B.x << " " <<B.y << endl;
+				//cout << "VEC  " << vec.x << " " << vec.y << endl;
+
+				float dist = hgMath::getDist(vec);
+				if (dist < min_dist) {
+					min_dist = dist;
+					near = B;
+				}
+			}
+			if (min_dist < th) {
+				route[i][ii] = near;
+				//cout << "Near found! " << near.x << " " << near.y << endl;
+			}
+		}
+	}
 }
 void PathPlanner::draw_Contours() {
 	//cout << "HELLOW " << endl;

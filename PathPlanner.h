@@ -18,7 +18,7 @@ public:
 	static std::vector<Pos> samplingRoute(std::vector<Pos>, float); //Adjust interval of route
 	static std::vector<float> getCurvature(std::vector<Pos> const& vecContourPoints);
 	static std::vector<std::vector<float>> getCurvatureFromRoute(std::vector<std::vector<Pos>> route);
-
+	static void findNearestPoints(std::vector<vector<Pos>>& route, std::vector<Pos> raw_input);
 	static std::vector<std::vector<Pos>> getCarposeWithTimestamp(std::vector<std::vector<Pos>> route, float speed);
 	static std::vector<bool> checkCarDist(std::vector<Pos> carPose, float th = 10);
 	static bool moveCar(std::vector<Pos> route, Pos& curPose, int& nextIdx, float& dist);
