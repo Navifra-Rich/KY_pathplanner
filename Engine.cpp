@@ -8,6 +8,11 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/opencv.hpp>
+
+void Engine::getWaypoint(vector<Pos> waypoint_temp)
+{
+    this->wayPoints = waypoint_temp;
+}
 void Engine::setCarnum(int car_num) {
 	this->car_num = car_num;
 }
