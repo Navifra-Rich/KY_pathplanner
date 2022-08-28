@@ -218,9 +218,10 @@ std::vector<std::vector<float>> PathPlanner::getCurvatureFromRoute(std::vector<s
 }
 std::vector<std::vector<Pos>> PathPlanner::samplingAllRoute(std::vector<std::vector<Pos>> route) {
 	std::vector<std::vector<Pos>> re_route;
+	cout << "Route size " << route.size() << endl;
 	for (int i = 0; i < route.size(); i++) {
 		std::cout << "Pre  len " << route[i].size() << std::endl;
-		re_route.push_back(samplingRoute(route[i],2));
+		re_route.push_back(samplingRoute(route[i],50));
 		std::cout << "Post len " << re_route[i].size() << std::endl;
 		
 	}
@@ -244,23 +245,37 @@ std::vector<Pos> PathPlanner::samplingRoute(std::vector<Pos> points, float th) {
 		}
 		if ((it + 1) < points.end()) {
 			Pos vecA, vecB;
-			vecA = Pos(it->x - re_vector[idx].x, it->y - re_vector[idx].y);
-			vecB = Pos((it+1)->x- it->x, (it+1)->y -it->y);
-			float innerV = vecA.x * vecB.x+ vecA.y * vecB.y;
+			vecA = Pos(re_vector[idx].x - it->x, re_vector[idx].y - it->y);
+			vecB = Pos((it + 1)->x - it->x, (it + 1)->y - it->y);
+			float innerV = vecA.x * vecB.x + vecA.y * vecB.y;
 			float sA = sqrt(vecA.x * vecA.x + vecA.y * vecA.y);
-			float sB = sqrt(vecB.x*vecB.x + vecB.y*vecB.y);
-			float cosVec = acos(innerV / sA / sB )/ 3.141592*180;
-			if (abs(cosVec) > 70) {
+			float sB = sqrt(vecB.x * vecB.x + vecB.y * vecB.y);
+			float cosVec = acos(innerV / sA / sB) / 3.141592 * 180;
+			//cout << "COS " << cosVec << endl;
+
+			//cosVec = int(cosVec + 360)%360;
+
+			if (abs(cosVec) < 134) {
 				idx++;
 				re_vector.push_back(Pos(it->x, it->y));
 			}
+			//vecA = Pos(it->x - re_vector[idx].x, it->y - re_vector[idx].y);
+			//vecB = Pos((it+1)->x- it->x, (it+1)->y -it->y);
+			//float innerV = vecA.x * vecB.x+ vecA.y * vecB.y;
+			//float sA = sqrt(vecA.x * vecA.x + vecA.y * vecA.y);
+			//float sB = sqrt(vecB.x*vecB.x + vecB.y*vecB.y);
+			//float cosVec = acos(innerV / sA / sB )/ 3.141592*180;
+			//if (abs(cosVec) > 70) {
+			//	idx++;
+			//	re_vector.push_back(Pos(it->x, it->y));
+			//}
 			//cout << "COS = " << cosVec << endl;
 
 		}
 		//pre_point = Pos(it->x, it->y);
-		
-
 	}
+	re_vector.push_back(points[0]);
+
 	return re_vector;
 }
 std::vector<Pos> PathPlanner::save_clustering_img(std::vector<Pos> points) {
@@ -376,8 +391,9 @@ bool PathPlanner::moveCar(std::vector<Pos> route, Pos& curPose, int& nextIdx, fl
 	Pos newCurPose(curPose.x + vec.x*ratio, curPose.y + vec.y * ratio);
 	//cout << "		RATIO	" << ratio<< endl;
 	//cout << "		New pose " << newCurPose.x<<"  "<<newCurPose.y<< endl;
-	//cout << "		Moved dist = " << hgMath::getDist(newCurPose - curPose)<<endl;
+	//cout << "		Moved dist = " << hgMath::getDist(newCurPose - curPose)<<endl
 	curPose = newCurPose;
+	//cout << "		New pose " << curPose.x << "  " << curPose.y << endl;
 	//}
 	return false;
 }

@@ -24,12 +24,20 @@ void Engine::setWaypointRand(int waypoint_num) {
 	//this->wayPoints.push_back(Pos(300,400 ));
 	//this->wayPoints.push_back(Pos(100,200));
 
+	//this->wayPoints.push_back(Pos(269.823, 500));
+	//this->wayPoints.push_back(Pos(450, 312.809));
+	//this->wayPoints.push_back(Pos(438.129, 105.814));
+	//this->wayPoints.push_back(Pos(250.350, 100));
+	//this->wayPoints.push_back(Pos(50, 281.058));
+	//this->wayPoints.push_back(Pos(58.649, 484.560));
+
+
 	// ��~����
-	this->wayPoints.push_back(Pos(120, 50));
-	this->wayPoints.push_back(Pos(280, 50));
-	this->wayPoints.push_back(Pos(340, 210));
-	this->wayPoints.push_back(Pos(280, 190));
-	this->wayPoints.push_back(Pos(180, 210));
+	//this->wayPoints.push_back(Pos(120, 50));
+	//this->wayPoints.push_back(Pos(280, 50));
+	//this->wayPoints.push_back(Pos(340, 210));
+	//this->wayPoints.push_back(Pos(280, 190));
+	//this->wayPoints.push_back(Pos(180, 210));
 	// 
 	// �����
 	//this->wayPoints.push_back(Pos(280, 503));
@@ -50,16 +58,16 @@ void Engine::setWaypointRand(int waypoint_num) {
 	//this->wayPoints.push_back(Pos(10, 600));
 
 	// ����
-	//this->wayPoints.push_back(Pos(100, 0));
-	//this->wayPoints.push_back(Pos(200, 200));
-	//this->wayPoints.push_back(Pos(300, 0));
-	//this->wayPoints.push_back(Pos(270, 200));
-	//this->wayPoints.push_back(Pos(400, 400));
-	//this->wayPoints.push_back(Pos(250, 400));
-	//this->wayPoints.push_back(Pos(200, 600));
-	//this->wayPoints.push_back(Pos(150, 400));
-	//this->wayPoints.push_back(Pos(0, 400));
-	//this->wayPoints.push_back(Pos(130, 200));
+	this->wayPoints.push_back(Pos(100, 0));
+	this->wayPoints.push_back(Pos(200, 200));
+	this->wayPoints.push_back(Pos(300, 0));
+	this->wayPoints.push_back(Pos(270, 200));
+	this->wayPoints.push_back(Pos(400, 400));
+	this->wayPoints.push_back(Pos(250, 400));
+	this->wayPoints.push_back(Pos(200, 600));
+	this->wayPoints.push_back(Pos(150, 400));
+	this->wayPoints.push_back(Pos(0, 400));
+	this->wayPoints.push_back(Pos(130, 200));
 	//NOP 
 	//this->wayPoints.push_back(Pos(280, 475));
 	//this->wayPoints.push_back(Pos(130, 325));
@@ -92,7 +100,7 @@ std::vector<std::vector<Pos>> Engine::getPath2() {
 
 	std::vector<std::vector<Pos>> route;
 	std::vector<std::vector<Pos>> route_integral;
-	threshold = 10;
+	threshold = 50;
 	if (ratio < threshold) {
 		std::cout << "Kmeans mode" << std::endl;
 		// clock_t start, end;
@@ -126,21 +134,15 @@ std::vector<std::vector<Pos>> Engine::getPath2() {
 	std::vector<std::vector<float>> cur1;
 	if (ratio < threshold) route = PathPlanner::samplingAllRoute(route);
 	else route = PathPlanner::samplingAllRoute(route_integral);
-	route = PathPlanner::getCarposeWithTimestamp(route, 5);
+
+	//route = PathPlanner::getCarposeWithTimestamp(route, 5);
 	PathPlanner::printWaypoints(route, cur1);
+	//for (std::vector<std::vector<Pos>> ::iterator i = route.begin(); i < route.end(); i++) {
+	//	for (std::vector<Pos> ::iterator j = i->begin(); j < i->end(); j++) {
+	//		cout << "Coord  " << j->x << " / " << j->y << endl;
+	//	}
+	//}
+
 	return route;
-	//cout << "-----------------" << endl;
-	//std::vector<std::vector<float>> cur2 = PathPlanner::getCurvatureFromRoute(route_integral);
-	//
-	//float max_cur1, max_cur2;
-	//max_cur1 = max_cur2 = 0;
-	//for (int i = 0; i < cur1.size(); i++) {
-	//	for (int j = 0; j < cur1[i].size(); j++) if (cur1[i][j] > max_cur1) max_cur1 = cur1[i][j];
-	//	for (int j = 0; j < cur2[i].size(); j++) if (cur2[i][j] > max_cur2) max_cur2 = cur2[i][j];
-	//}
-	//std::cout << "CUR1 " << max_cur1 << " CUR2  " << max_cur2 << std::endl;
-	//for (int i = 0; i < route.size(); i++) {
-	//std::cout << "CS " << cur1[i].size() << " RS  " << route[i].size() << std::endl;
-	//}
-	//return route_integral;
+
 }

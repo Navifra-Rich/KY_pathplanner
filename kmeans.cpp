@@ -32,9 +32,8 @@ public:
 			center[i].y = waypoints[i].y;
 			distance[i].resize(DATA_COUNT);
 			
-			std::cout << "Center "<<center[i].x<<" "<< center[i].y<< ""<<std::endl;
+			//std::cout << "Center "<<center[i].x<<" "<< center[i].y<< ""<<std::endl;
 		}
-		std::cout << "HERE!!!!!!!!!!!!" << std::endl;
 		bool loop = true;
 		while (loop) { 
 			//when the k-Positions are all same with next Position.
@@ -65,9 +64,9 @@ public:
 				center[min_j].y += waypoints[i].y;
 				count_Group[min_j]++;
 			}
-			for (int i = 0; i < K_COUNT; i++) {
-				std::cout << "Count Group " << count_Group[i]<<std::endl;
-			}
+			//for (int i = 0; i < K_COUNT; i++) {
+			//	std::cout << "Count Group " << count_Group[i]<<std::endl;
+			//}
 
 			//change K
 			int same_count = 0;
@@ -82,7 +81,7 @@ public:
 					k[i].x = center[i].x / count_Group[i];
 					k[i].y = center[i].y / count_Group[i];
 				}
-				cout << "SC " << same_count << " K " << K_COUNT << endl;
+				//cout << "SC " << same_count << " K " << K_COUNT << endl;
 				if (same_count == K_COUNT) {
 					loop = false;
 				}
