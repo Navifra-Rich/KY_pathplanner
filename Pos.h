@@ -7,6 +7,6 @@ public:
 	Pos();
 	Pos operator+(Pos const& obj);
 	Pos operator-(Pos const& obj);
-	Pos mul(double x);
+	Pos mul(double x);				// Pos*Scalar
 };
 

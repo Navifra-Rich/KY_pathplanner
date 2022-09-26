@@ -6,15 +6,16 @@ using namespace std;
 int main() {
 	Engine engine;
 
-	//ÀÓÀÇ·Î 10°³ waypoint ¼³Á¤ (¹üÀ§ = xy 0~100)
+	//ï¿½ï¿½ï¿½Ç·ï¿½ 10ï¿½ï¿½ waypoint ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ = xy 0~100)
 	//engine.setCarnum(3);
 	//engine.setWaypointRand(10);
 	//engine.getPath();
 	//engine.waypoints2vector(engine.wayPoints);
 	//engine.waypoints2vector(engine.area_center);
 
-	engine.setCarnum(4);
+	engine.setCarnum(3);
 	engine.setWaypointRand(10);
+
 	engine.getPath2();
 
 

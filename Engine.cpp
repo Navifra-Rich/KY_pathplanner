@@ -29,12 +29,12 @@ void Engine::setWaypointRand(int waypoint_num) {
 	//this->wayPoints.push_back(Pos(300,400 ));
 	//this->wayPoints.push_back(Pos(100,200));
 
-	//this->wayPoints.push_back(Pos(269.823, 500));
-	//this->wayPoints.push_back(Pos(450, 312.809));
-	//this->wayPoints.push_back(Pos(438.129, 105.814));
-	//this->wayPoints.push_back(Pos(250.350, 100));
-	//this->wayPoints.push_back(Pos(50, 281.058));
-	//this->wayPoints.push_back(Pos(58.649, 484.560));
+	this->wayPoints.push_back(Pos(269.823, 500));
+	this->wayPoints.push_back(Pos(450, 312.809));
+	this->wayPoints.push_back(Pos(438.129, 105.814));
+	this->wayPoints.push_back(Pos(250.350, 100));
+	this->wayPoints.push_back(Pos(50, 281.058));
+	this->wayPoints.push_back(Pos(58.649, 484.560));
 
 
 	// ��~����
@@ -63,16 +63,16 @@ void Engine::setWaypointRand(int waypoint_num) {
 	//this->wayPoints.push_back(Pos(10, 600));
 
 	// ����
-	this->wayPoints.push_back(Pos(100.7, 0));
-	this->wayPoints.push_back(Pos(200.7, 200));
-	this->wayPoints.push_back(Pos(300.7, 0));
-	this->wayPoints.push_back(Pos(270.7, 200));
-	this->wayPoints.push_back(Pos(400.7, 400));
-	this->wayPoints.push_back(Pos(250.7, 400));
-	this->wayPoints.push_back(Pos(200.7, 600));
-	this->wayPoints.push_back(Pos(150.7, 400));
-	this->wayPoints.push_back(Pos(0, 400));
-	this->wayPoints.push_back(Pos(130, 200));
+	//this->wayPoints.push_back(Pos(100.7, 0));
+	//this->wayPoints.push_back(Pos(200.7, 200));
+	//this->wayPoints.push_back(Pos(300.7, 0));
+	//this->wayPoints.push_back(Pos(270.7, 200));
+	//this->wayPoints.push_back(Pos(400.7, 400));
+	//this->wayPoints.push_back(Pos(250.7, 400));
+	//this->wayPoints.push_back(Pos(200.7, 600));
+	//this->wayPoints.push_back(Pos(150.7, 400));
+	//this->wayPoints.push_back(Pos(0, 400));
+	//this->wayPoints.push_back(Pos(130, 200));
 	//NOP 
 	//this->wayPoints.push_back(Pos(280, 475));
 	//this->wayPoints.push_back(Pos(130, 325));
@@ -86,21 +86,10 @@ void Engine::setWaypointRand(int waypoint_num) {
 	//this->wayPoints.push_back(Pos(700, 400));
 }
 std::vector<std::vector<Pos>> Engine::getPath2() {
-	double threshold = 5.0;
-	//for (int i = 0; i < wayPoints.size(); i++) {
-	//	wayPoints[i].x *= 10;
-	//	wayPoints[i].y *= 10;
-	//}
-	Pos center = hgMath::getCenterPoint(this->wayPoints);
-
-	std::cout << "Center = " << center.x << " " << center.y << std::endl;
-
 	std::vector<Pos> inter_points = PathPlanner::getInnerPoint_polygon(wayPoints);
-	std::cout << inter_points[0].x << " " << inter_points[0].y << std::endl;
-	std::cout << inter_points[0].x << " " << inter_points[0].y << std::endl;
-	std::cout << "N = " << inter_points.size() << std::endl;
 
 
+	// --------------------------- Principal Component Analasis -------------------------
 	std::vector<Pos> pca = hgMath::PCA(inter_points);
 	if (pca[0].x == 0) pca[0].x += 0.000001;
 	if (pca[1].y == 0) pca[1].y += 0.000001;
@@ -108,51 +97,40 @@ std::vector<std::vector<Pos>> Engine::getPath2() {
 	if (ratio < 1) ratio = 1 / (ratio);
 	std::cout << "RATIO " << ratio << std::endl;
 
+
+
+	// --------------------------- Get path -------------------------
 	std::vector<std::vector<Pos>> route;
 	std::vector<std::vector<Pos>> route_integral;
-	threshold = 50;
+	double threshold = 50;
 	if (ratio < threshold) {
+		// --------------------------- Get path by Kmeans clustering -------------------------
 		std::cout << "Kmeans mode" << std::endl;
-		// clock_t start, end;
-		// start = clock(); 
 		KMean_clustering km(this->car_num, inter_points.size());
-		// end = clock();
-		// cout << "Time  = " << (double)(end - start) << endl;
 		std::vector<std::vector<Pos>> bf_convex_route;
 		bf_convex_route = PathPlanner::divide_waypoints(km.clustering(inter_points));
+
 		for (std::vector<std::vector<Pos>>::iterator it = bf_convex_route.begin(); it < bf_convex_route.end(); it++) {
-			cout << "SIZE ======= "<<(*it).size() << endl;
 			std::vector<Pos> convex_route = PathPlanner::save_clustering_img(*it);
 			route.push_back(convex_route);
 		}
 	}
 	else{
+		// --------------------------- Get path by Integral -------------------------
 		std::cout << "Integral" << std::endl;
-		clock_t start, end;
-		start = clock();
 		double area = hgMath::integral_sum(this->wayPoints);
 		double area_per_unit = area / this->car_num;
 		double area_th = 0.2;
 		route_integral = PathPlanner::divide_intergral_center(this->wayPoints, area_per_unit, this->car_num);
-		end = clock();
-		cout << "TIME = " << (double)(end - start) << endl;
 		std::vector<std::vector<float>> cur1 = PathPlanner::getCurvatureFromRoute(route);
 
 	}
-	//cout << "Len = " << route.size()<< endl;
-	//cout << "Len = " << route_integral.size()<< endl;
+	// --------------------------- Post Process -------------------------
 	std::vector<std::vector<float>> cur1;
-	if (ratio < threshold) route = PathPlanner::samplingAllRoute(route);
-	else route = PathPlanner::samplingAllRoute(route_integral);
-
-	//route = PathPlanner::getCarposeWithTimestamp(route, 5);
+	route = PathPlanner::samplingAllRoute(route, 500, 134);
+	route = PathPlanner::samplingAllRoute(route, 500, 165);
 	PathPlanner::findNearestPoints(route, wayPoints);
+	route = PathPlanner::getCarposeWithTimestamp(route, 50);
 	PathPlanner::printWaypoints(route, cur1);
-	//for (std::vector<std::vector<Pos>> ::iterator i = route.begin(); i < route.end(); i++) {
-	//	for (std::vector<Pos> ::iterator j = i->begin(); j < i->end(); j++) {
-	//		cout << "Coord  " << j->x << " / " << j->y << endl;
-	//	}
-	//}
 	return route;
-
 }

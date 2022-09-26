@@ -117,4 +117,3 @@ std::vector<Pos> hgMath::PCA(std::vector<Pos> points) {
 	std::cout << " PCA " << pca[0].x << "  " << pca[0].y << "  " << pca[1].x << "  " << pca[1].y << std::endl;
 	return pca;
 }
-
