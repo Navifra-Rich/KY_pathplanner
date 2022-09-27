@@ -103,7 +103,8 @@ std::vector<std::vector<Pos>> Engine::getPath2() {
 	std::vector<std::vector<Pos>> route;
 	std::vector<std::vector<Pos>> route_integral;
 	double threshold = 50;
-	if (ratio < threshold) {
+	int toggle=2;
+	if (toggle==0 or (toggle==2 and ratio < threshold)) {
 		// --------------------------- Get path by Kmeans clustering -------------------------
 		std::cout << "Kmeans mode" << std::endl;
 		KMean_clustering km(this->car_num, inter_points.size());
