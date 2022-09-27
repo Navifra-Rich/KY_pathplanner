@@ -130,11 +130,31 @@ std::vector<std::vector<Pos>> Engine::getPath2() {
 	std::vector<std::vector<float>> cur1;
 	route = PathPlanner::samplingAllRoute(route, 500, 134);
 	route = PathPlanner::samplingAllRoute(route, 500, 165);
-	PathPlanner::findNearestPoints(route, wayPoints);
-	vector<float> car_speed(car_num, 50);
-	car_speed[0] = 10;
-	car_speed[2] = 110;
-	route = PathPlanner::getCarposeWithTimestamp(route, car_speed);
+    Pos center_pos;
+    double temp_x=0;
+    double temp_y=0;
+    double scale_factor = 0.15;
+    for (std::vector<std::vector<Pos>> ::iterator i = route.begin(); i < route.end(); i++) {
+        temp_x=0;
+        temp_y=0;
+        for (std::vector<Pos> ::iterator j = i->begin(); j < i->end()-1; j++) {
+            temp_x += j->x;
+            temp_y += j->y;
+//            cout << "Coord  (" << j->x << " , " << j->y <<")"<< endl;
+        }
+        temp_x /= i->size()-1;
+        temp_y /= i->size()-1;
+//        center_pos.push_back(Pos(temp_x,temp_y));
+        center_pos = Pos(temp_x,temp_y);
+
+
+        for (int index=0; index<i->size();index++) {
+            i->at(index).x=i->at(index).x + scale_factor*(center_pos.x-i->at(index).x);
+            i->at(index).y=i->at(index).y + scale_factor*(center_pos.y-i->at(index).y);
+        }
+
+    }
 	PathPlanner::printWaypoints(route, cur1);
+
 	return route;
 }
