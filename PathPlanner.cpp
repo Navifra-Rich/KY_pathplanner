@@ -151,7 +151,7 @@ std::vector<Pos> PathPlanner::save_clustering_img(std::vector<Pos> points) {
 	}
 	return re_vector;
 }
-std::vector<std::vector<Pos>> PathPlanner::getCarposeWithTimestamp(std::vector<std::vector<Pos>> route, float speed) {
+std::vector<std::vector<Pos>> PathPlanner::getCarposeWithTimestamp(std::vector<std::vector<Pos>> route, std::vector<float> speed) {
 
 	int car_num = route.size();
 	std::vector<Pos> curCarPose;
@@ -174,7 +174,7 @@ std::vector<std::vector<Pos>> PathPlanner::getCarposeWithTimestamp(std::vector<s
 				routeWithTime[i].push_back(curCarPose[i]);
 				continue;
 			}
-			float dist = speed;
+			float dist = speed[i];
 
 			routeFinished[i] = moveCar(route[i], curCarPose[i], nextIndex[i], dist);
 			routeWithTime[i].push_back(curCarPose[i]);

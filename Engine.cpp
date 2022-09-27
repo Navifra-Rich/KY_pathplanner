@@ -130,7 +130,10 @@ std::vector<std::vector<Pos>> Engine::getPath2() {
 	route = PathPlanner::samplingAllRoute(route, 500, 134);
 	route = PathPlanner::samplingAllRoute(route, 500, 165);
 	PathPlanner::findNearestPoints(route, wayPoints);
-	route = PathPlanner::getCarposeWithTimestamp(route, 50);
+	vector<float> car_speed(car_num, 50);
+	car_speed[0] = 10;
+	car_speed[2] = 110;
+	route = PathPlanner::getCarposeWithTimestamp(route, car_speed);
 	PathPlanner::printWaypoints(route, cur1);
 	return route;
 }

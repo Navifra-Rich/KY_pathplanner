@@ -17,11 +17,12 @@ public:
 	static std::vector<std::vector<Pos>> divide_intergral_center(std::vector<Pos>, double, int);				// Get path by integral algorithm
 	
 
-	// ----------------------------- Func for Post process --------------------------
+	// ----------------------------- Func for Post process --------------------------::
 	static std::vector<std::vector<Pos>> samplingAllRoute(std::vector<std::vector<Pos>>, float th, float deg);	// Sampling route (get vertex from routes)
 	static std::vector<Pos> samplingRoute(std::vector<Pos>, float th, float deg);								// Sampling route (determining if a point removed using dist, deg)
 	static void findNearestPoints(std::vector<vector<Pos>>& route, std::vector<Pos> raw_input);					// Adjust point (because init value is float but unit of image pixel is int)
-	static std::vector<std::vector<Pos>> getCarposeWithTimestamp(std::vector<std::vector<Pos>> route, float speed);	//Sampling with car speed
+	//static std::vector<std::vector<Pos>> getCarposeWithTimestamp(std::vector<std::vector<Pos>> route, float speed);	//Sampling with car speed
+	static std::vector<std::vector<Pos>> getCarposeWithTimestamp(std::vector<std::vector<Pos>> route, vector<float>);	//Sampling with car speed
 	static std::vector<bool> checkCarDist(std::vector<Pos> carPose, float th = 10);								// Check the dist between cars
 	static bool moveCar(std::vector<Pos> route, Pos& curPose, int& nextIdx, float& dist);						// Move the car for simulate
 	
